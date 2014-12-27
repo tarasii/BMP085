@@ -26,14 +26,13 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_USART1);
 
     //return 0;
-  }
+  } else {
 	
-  if (USARTx == USART2) {
+  //if (USARTx == USART2) {
 
     // Turn on clocks
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
 		GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_2 | GPIO_Pin_3;

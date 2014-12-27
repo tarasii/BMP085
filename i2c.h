@@ -1,7 +1,7 @@
 #ifndef I2C_H
 #define I2C_H
 
-#include <stm32f10x_i2c.h>
+#include "utils.h"
 
 typedef enum {Error = 0, Success = !Error } Status;
 

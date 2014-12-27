@@ -77,7 +77,7 @@ int main(void){
 	
 	Init_tim_cnt();
 
-	
+	I2C_LowLevel_Init (I2C2, IS_I2C_CLOCK_SPEED(400000), 0xA0);
 		
 	
 	while(1){

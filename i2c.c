@@ -1,7 +1,3 @@
-#include <stm32f10x.h>
-#include <stm32f10x_i2c.h>
-#include <stm32f10x_rcc.h>
-#include <stm32f10x_gpio.h>
 
 #include "I2C.h"
 
@@ -54,7 +50,7 @@ Status I2C_Read(I2C_TypeDef* I2Cx, uint8_t *buf,uint32_t nbyte, uint8_t SlaveAdd
   // Enable Acknowledgement, clear POS flag
 
   I2C_AcknowledgeConfig(I2Cx, ENABLE);
-  I2C_NACKPositionConfig(I2Cx, I2C_NACKPosition_Current);
+  //I2C_NACKPositionConfig(I2Cx, I2C_NACKPosition_Current);
 
   // Intiate Start Sequence (wait for EV5
 
@@ -78,10 +74,10 @@ Status I2C_Read(I2C_TypeDef* I2Cx, uint8_t *buf,uint32_t nbyte, uint8_t SlaveAdd
 
       // EV6_1 -- must be atomic -- Clear ADDR, generate STOP
 
-      __disable_irq();
+      //__disable_irq();
       (void) I2Cx->SR2;                           
       I2C_GenerateSTOP(I2Cx,ENABLE);      
-      __enable_irq();
+      //__enable_irq();
 
       // Receive data   EV7
 
@@ -93,23 +89,23 @@ Status I2C_Read(I2C_TypeDef* I2Cx, uint8_t *buf,uint32_t nbyte, uint8_t SlaveAdd
     {
       // Set POS flag
 
-      I2C_NACKPositionConfig(I2Cx, I2C_NACKPosition_Next);
+      //I2C_NACKPositionConfig(I2Cx, I2C_NACKPosition_Next);
 
       // EV6_1 -- must be atomic and in this order
 
-      __disable_irq();
+      //__disable_irq();
       (void) I2Cx->SR2;                           // Clear ADDR flag
       I2C_AcknowledgeConfig(I2Cx, DISABLE);       // Clear Ack bit
-      __enable_irq();
+      //__enable_irq();
 
       // EV7_3  -- Wait for BTF, program stop, read data twice
 
       Timed(!I2C_GetFlagStatus(I2Cx, I2C_FLAG_BTF));
 
-      __disable_irq();
+      //__disable_irq();
       I2C_GenerateSTOP(I2Cx,ENABLE);
       *buf++ = I2Cx->DR;
-      __enable_irq();
+      //__enable_irq();
 
       *buf++ = I2Cx->DR;
 
@@ -132,10 +128,10 @@ Status I2C_Read(I2C_TypeDef* I2Cx, uint8_t *buf,uint32_t nbyte, uint8_t SlaveAdd
 
       I2C_AcknowledgeConfig(I2Cx, DISABLE);           // clear ack bit
 
-      __disable_irq();
+      //__disable_irq();
       *buf++ = I2C_ReceiveData(I2Cx);             // receive byte N-2
       I2C_GenerateSTOP(I2Cx,ENABLE);                  // program stop
-      __enable_irq();
+      //__enable_irq();
 
       *buf++ = I2C_ReceiveData(I2Cx);             // receive byte N-1
 
@@ -212,67 +208,66 @@ Status I2C_Write(I2C_TypeDef* I2Cx, const uint8_t* buf,  uint32_t nbyte, uint8_t
 void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress)
 {
 
-    GPIO_InitTypeDef  GPIO_InitStructure;
-    I2C_InitTypeDef  I2C_InitStructure;
+	GPIO_InitTypeDef  GPIO_InitStructure;
+	I2C_InitTypeDef  I2C_InitStructure;
 
-    // Enable GPIOB clocks
+	// Enable GPIOB clocks
+	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	// Configure I2C clock and GPIO 
+	GPIO_StructInit(&GPIO_InitStructure);
+	if (I2Cx == I2C1){
 
-    // Configure I2C clock and GPIO 
+		/* I2C1 clock enable */
 
-    GPIO_StructInit(&GPIO_InitStructure);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
 
+		/* I2C1 SDA and SCL configuration */
 
-    if (I2Cx == I2C1){
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+		GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-        /* I2C1 clock enable */
+		/* I2C1 Reset */
+		//RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
+		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
+		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
 
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+	} else {
 
-        /* I2C1 SDA and SCL configuration */
+		/* I2C2 clock enable */
 
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
-        GPIO_Init(GPIOB, &GPIO_InitStructure);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
 
-        /* I2C1 Reset */
+		/* I2C1 SDA and SCL configuration */
 
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+		GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-      }
-      else {
+		/* I2C2  Reset */
+		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
+		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
 
-        /* I2C2 clock enable */
+	}
 
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
+	/* Configure I2Cx                */
+	I2C_StructInit(&I2C_InitStructure);
+	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+	I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+	I2C_InitStructure.I2C_OwnAddress1 = OwnAddress;
+	I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+	I2C_InitStructure.I2C_ClockSpeed = ClockSpeed;
+	
+	I2C_Cmd(I2Cx, ENABLE); 
+	I2C_Init(I2Cx, &I2C_InitStructure);
 
-        /* I2C1 SDA and SCL configuration */
-
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
-        GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-        /* I2C2  Reset */
-
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
-
-      }
-
-    /* Configure I2Cx                */
-
-    I2C_StructInit(&I2C_InitStructure);
-    I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
-    I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
-    I2C_InitStructure.I2C_OwnAddress1 = OwnAddress;
-    I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
-    I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
-    I2C_InitStructure.I2C_ClockSpeed = ClockSpeed;
-
-    I2C_Init(I2Cx, &I2C_InitStructure);
-    I2C_Cmd(I2Cx, ENABLE); 
 }

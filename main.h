@@ -10,6 +10,7 @@
 #include "dht11.h"
 //#include "ds2417.h"
 #include "uart.h"
+#include "i2c.h"
 
 //HCH1000+555
 #define capasitive_coefficient  6492.0 //0,693*(51+2*560)*8
