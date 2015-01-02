@@ -34,4 +34,5 @@
 .\obj\main.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
 .\obj\main.o: dht11.h
 .\obj\main.o: uart.h
+.\obj\main.o: bmp085.h
 .\obj\main.o: i2c.h

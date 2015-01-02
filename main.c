@@ -63,6 +63,9 @@ void DMA1_Channel1_IRQHandler    (void)
 int main(void){
 
 	char strDisp[25]; uint8_t dhtbuf[5]; 
+	uint8_t i2craw[5];
+	uint16_t UT;
+	uint32_t UP;
 	char rd;
 	
 	RCC_Configuration();
@@ -77,9 +80,11 @@ int main(void){
 	
 	Init_tim_cnt();
 
-	I2C_LowLevel_Init (I2C2, IS_I2C_CLOCK_SPEED(400000), 0xA0);
-		
 	
+	//I2C_LowLevel_Init (I2C2, IS_I2C_CLOCK_SPEED(400000), 0xA0);
+	I2C_LowLevel_Init (I2C2, 1000, 0xA0);
+		
+
 	while(1){
 	
 		if (flag_UserButton == 1){
@@ -94,12 +99,14 @@ int main(void){
 // 			if (stop==0) {GPIO_TOGGLE(LD_PORT,LD_BLUE);}	
 // 		}
 		
-				//I2C_Init();		
  
 		acquireTemperatureData();
 
  		while (!flag_ADCDMA_TransferComplete);
- 				
+    
+
+    Delay(100);
+		
  		processTempData();
 
 
@@ -107,10 +114,12 @@ int main(void){
 		humidity = Humidity_DHT22(dhtbuf);
 		temperature = Temperature_DHT22(dhtbuf);
 
-				//sprintf(strDisp, "T_DHT=%2.1fC;\n\r", temperature);				
-				//USART_DMA(strDisp, strlen(strDisp));		
-    
-				//USART_print(USART1,"0",1);
+		RawTemperarure_bmp085(i2craw);
+		RawPreasure_bmp085(i2craw);
+		
+		UT = (i2craw[0] << 8) | i2craw[1];
+		UP = (i2craw[2] << 16) | (i2craw[3] << 8) | i2craw[4];
+		
 		
 		if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)==SET)
 		{
@@ -147,13 +156,24 @@ int main(void){
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
 				sprintf(strDisp, "H_DHT=%2.1f%%.\n\r", humidity);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+				sprintf(strDisp, "BMP085_RAW %02x%02x%02x%02x%02x\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "UT %4d\n\r",UT);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "UP %4d\n\r",UP);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
 //			}				
 			}
 			
  		if (uint16_time_diff(systick_ms, toggle_ms) >= 500)
  		{
  			toggle_ms = systick_ms;
-			switch (mode){
+
+			//I2C_Write(I2C2,dhtbuf,5,0xA1);
+
+  		switch (mode){
 				case 0:				
 					if (first_time_in_mode==1) {
 						
@@ -448,6 +468,13 @@ void Init_GPIOs (void){
   GPIO_Init(LD_PORT, &GPIO_InitStructure);
   GPIO_LOW(LD_PORT,LD_GREEN);	
   GPIO_LOW(LD_PORT,LD_BLUE);
+
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+//  GPIO_Init(GPIOB, &GPIO_InitStructure);
   
 /* ADC input */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3  ;                               

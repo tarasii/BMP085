@@ -5,6 +5,7 @@
 ".\obj\dht11.o"
 ".\obj\uart.o"
 ".\obj\i2c.o"
+".\obj\bmp085.o"
 ".\obj\stm32l1xx_gpio.o"
 ".\obj\stm32l1xx_rcc.o"
 ".\obj\stm32l1xx_rtc.o"

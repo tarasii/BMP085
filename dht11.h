@@ -1,4 +1,4 @@
-/* Define to prevent recursive inclusion -------------------------------------*/
+ /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __DHT11_H
 #define __DHT11_H
 

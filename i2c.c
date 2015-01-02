@@ -232,10 +232,13 @@ void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress)
 		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
 		GPIO_Init(GPIOB, &GPIO_InitStructure);
 
+		GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_I2C1);
+		GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_I2C1);
+
 		/* I2C1 Reset */
 		//RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
-		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
-		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
+//		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
+//		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
 
 	} else {
 
@@ -252,9 +255,12 @@ void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress)
 		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
 		GPIO_Init(GPIOB, &GPIO_InitStructure);
 
+		GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_I2C2);
+		GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_I2C2);
+
 		/* I2C2  Reset */
-		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
-		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
+//		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
+//		RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
 
 	}
 
@@ -267,7 +273,7 @@ void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress)
 	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
 	I2C_InitStructure.I2C_ClockSpeed = ClockSpeed;
 	
-	I2C_Cmd(I2Cx, ENABLE); 
 	I2C_Init(I2Cx, &I2C_InitStructure);
+	I2C_Cmd(I2Cx, ENABLE); 
 
 }
