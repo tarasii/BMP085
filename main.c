@@ -169,10 +169,10 @@ int main(void){
 
 				sprintf(strDisp, "T_BMP085=%2.1fC;\n\r", temperatureP);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-				sprintf(strDisp, "P_BMP085=%dPa=%3.1fmmHg.\n\r", preasure, BMP085_Preasure_mm(preasure));		
+				sprintf(strDisp, "P_BMP085=%dPa=%3.1fmmHg;\n\r", preasure, BMP085_Preasure_mm(preasure));		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
-				sprintf(strDisp, "T_DS=%2.1fC;\n\r", CalculateTemperature(owraw));		
+				sprintf(strDisp, "T_DS=%2.1fC.\n\r", CalculateTemperature(owraw));		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
 
 //			}				
