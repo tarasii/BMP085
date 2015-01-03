@@ -65,6 +65,7 @@ int main(void){
 
 	char strDisp[25]; uint8_t dhtbuf[5]; 
 	uint8_t i2craw[5];
+	uint16_t owraw;
 	char rd;
 	struct bmp085_type bmp085;
 	
@@ -72,7 +73,8 @@ int main(void){
 	
 	Init_GPIOs();
 	
-  USART_open(USART1, 9600);
+  USART_open(USART1, 9600);   //for RS232
+  USART_open(USART2, 115200); //for DS18B20
 	
 	configureDMA();
 	
@@ -122,6 +124,8 @@ int main(void){
 		temperatureP = BMP085_Temperarure(&bmp085);
 		preasure = BMP085_Preasure(&bmp085);
 		
+		owraw = GetSingleTemperature();
+		
 		
 		if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)==SET)
 		{
@@ -168,6 +172,8 @@ int main(void){
 				sprintf(strDisp, "P_BMP085=%dPa=%3.1fmmHg.\n\r", preasure, BMP085_Preasure_mm(preasure));		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
+				sprintf(strDisp, "T_DS=%2.1fC;\n\r", CalculateTemperature(owraw));		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
 
 //			}				
 			}
@@ -525,7 +531,6 @@ void Init_GPIOs (void){
 //	USART_Init(USART2, &USART_InitStructure);
 //	USART_Cmd(USART2, ENABLE);
 	
-  USART_open(USART2, 115200);
 
 //	//USART1
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10;

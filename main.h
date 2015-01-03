@@ -11,6 +11,7 @@
 //#include "ds2417.h"
 #include "uart.h"
 #include "bmp085.h"
+#include "18b20.h"
 
 
 //HCH1000+555

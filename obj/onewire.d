@@ -1,10 +1,10 @@
 .\obj\onewire.o: onewire.c
 .\obj\onewire.o: onewire.h
 .\obj\onewire.o: ..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h
-.\obj\onewire.o: C:\PRG\keil\ARM\CMSIS\Include\core_cm3.h
-.\obj\onewire.o: C:\PRG\keil\ARM\RV31\Inc\stdint.h
-.\obj\onewire.o: C:\PRG\keil\ARM\CMSIS\Include\core_cmInstr.h
-.\obj\onewire.o: C:\PRG\keil\ARM\CMSIS\Include\core_cmFunc.h
+.\obj\onewire.o: C:\Keil\ARM\CMSIS\Include\core_cm3.h
+.\obj\onewire.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\onewire.o: C:\Keil\ARM\CMSIS\Include\core_cmInstr.h
+.\obj\onewire.o: C:\Keil\ARM\CMSIS\Include\core_cmFunc.h
 .\obj\onewire.o: ..\..\..\..\INC\ST\STM32L1xx\system_stm32l1xx.h
 .\obj\onewire.o: .\stm32l1xx_conf.h
 .\obj\onewire.o: ..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_adc.h
@@ -30,5 +30,5 @@
 .\obj\onewire.o: ..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h
 .\obj\onewire.o: ..\STM32L1xx_StdPeriph_Driver\inc\misc.h
 .\obj\onewire.o: utils.h
-.\obj\onewire.o: C:\PRG\keil\ARM\RV31\Inc\stdio.h
-.\obj\onewire.o: C:\PRG\keil\ARM\RV31\Inc\string.h
+.\obj\onewire.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\onewire.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h

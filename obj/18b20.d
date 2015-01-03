@@ -2,10 +2,10 @@
 .\obj\18b20.o: 18b20.h
 .\obj\18b20.o: utils.h
 .\obj\18b20.o: ..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h
-.\obj\18b20.o: C:\PRG\keil\ARM\CMSIS\Include\core_cm3.h
-.\obj\18b20.o: C:\PRG\keil\ARM\RV31\Inc\stdint.h
-.\obj\18b20.o: C:\PRG\keil\ARM\CMSIS\Include\core_cmInstr.h
-.\obj\18b20.o: C:\PRG\keil\ARM\CMSIS\Include\core_cmFunc.h
+.\obj\18b20.o: C:\Keil\ARM\CMSIS\Include\core_cm3.h
+.\obj\18b20.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\18b20.o: C:\Keil\ARM\CMSIS\Include\core_cmInstr.h
+.\obj\18b20.o: C:\Keil\ARM\CMSIS\Include\core_cmFunc.h
 .\obj\18b20.o: ..\..\..\..\INC\ST\STM32L1xx\system_stm32l1xx.h
 .\obj\18b20.o: .\stm32l1xx_conf.h
 .\obj\18b20.o: ..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_adc.h
@@ -30,6 +30,6 @@
 .\obj\18b20.o: ..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_usart.h
 .\obj\18b20.o: ..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h
 .\obj\18b20.o: ..\STM32L1xx_StdPeriph_Driver\inc\misc.h
-.\obj\18b20.o: C:\PRG\keil\ARM\RV31\Inc\stdio.h
-.\obj\18b20.o: C:\PRG\keil\ARM\RV31\Inc\string.h
+.\obj\18b20.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\18b20.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
 .\obj\18b20.o: onewire.h

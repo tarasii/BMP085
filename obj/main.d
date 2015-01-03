@@ -36,3 +36,5 @@
 .\obj\main.o: uart.h
 .\obj\main.o: bmp085.h
 .\obj\main.o: i2c.h
+.\obj\main.o: 18b20.h
+.\obj\main.o: onewire.h
