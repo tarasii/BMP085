@@ -1,6 +1,6 @@
 Dependencies for Project 'dht22tocom', Target 'Target 1': (DO NOT MODIFY !)
 F (.\startup_stm32l1xx_md.s)(0x4F587C08)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx--list .\obj\startup_stm32l1xx_md.lst --xref -o .\obj\startup_stm32l1xx_md.o --depend .\obj\startup_stm32l1xx_md.d)
-F (.\main.c)(0x54A70ACE)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
+F (.\main.c)(0x54A818B8)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
 I (main.h)(0x54A704F9)
 I (utils.h)(0x50E69B9C)
 I (..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h)(0x5495D5DD)
@@ -33,9 +33,9 @@ I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\misc.h)(0x532C49A8)
 I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C80BA4)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C80BA4)
-I (dht11.h)(0x54A6CBBA)
-I (uart.h)(0x54A70246)
-I (bmp085.h)(0x54A70852)
+I (dht11.h)(0x54A7C886)
+I (uart.h)(0x54A7CAEB)
+I (bmp085.h)(0x54A818B8)
 I (i2c.h)(0x54A704F9)
 F (.\system_stm32l1xx.c)(0x4E69BBE8)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\system_stm32l1xx.o --omf_browse .\obj\system_stm32l1xx.crf --depend .\obj\system_stm32l1xx.d)
 I (..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h)(0x5495D5DD)
@@ -66,8 +66,8 @@ I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_tim.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_usart.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\misc.h)(0x532C49A8)
-F (.\dht11.c)(0x549602C8)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\dht11.o --omf_browse .\obj\dht11.crf --depend .\obj\dht11.d)
-I (dht11.h)(0x54A6CBBA)
+F (.\dht11.c)(0x54A7C663)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\dht11.o --omf_browse .\obj\dht11.crf --depend .\obj\dht11.d)
+I (dht11.h)(0x54A7C886)
 I (utils.h)(0x50E69B9C)
 I (..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h)(0x5495D5DD)
 I (C:\Keil\ARM\CMSIS\Include\core_cm3.h)(0x532C4C22)
@@ -99,8 +99,8 @@ I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\misc.h)(0x532C49A8)
 I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C80BA4)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C80BA4)
-F (.\uart.c)(0x54A700BD)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\uart.o --omf_browse .\obj\uart.crf --depend .\obj\uart.d)
-I (uart.h)(0x54A70246)
+F (.\uart.c)(0x54A7CAEB)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\uart.o --omf_browse .\obj\uart.crf --depend .\obj\uart.d)
+I (uart.h)(0x54A7CAEB)
 I (utils.h)(0x50E69B9C)
 I (..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h)(0x5495D5DD)
 I (C:\Keil\ARM\CMSIS\Include\core_cm3.h)(0x532C4C22)
@@ -132,7 +132,7 @@ I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\misc.h)(0x532C49A8)
 I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C80BA4)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C80BA4)
-F (.\i2c.c)(0x54A6EAD6)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\i2c.o --omf_browse .\obj\i2c.crf --depend .\obj\i2c.d)
+F (.\i2c.c)(0x54A7B89A)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\i2c.o --omf_browse .\obj\i2c.crf --depend .\obj\i2c.d)
 I (I2C.h)(0x54A704F9)
 I (utils.h)(0x50E69B9C)
 I (..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h)(0x5495D5DD)
@@ -165,8 +165,8 @@ I (..\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h)(0x532C49A8)
 I (..\STM32L1xx_StdPeriph_Driver\inc\misc.h)(0x532C49A8)
 I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C80BA4)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C80BA4)
-F (.\bmp085.c)(0x54A70BAC)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\bmp085.o --omf_browse .\obj\bmp085.crf --depend .\obj\bmp085.d)
-I (bmp085.h)(0x54A70852)
+F (.\bmp085.c)(0x54A818B8)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\STM32L1xx_StdPeriph_Driver\inc -I..\Board -I.\ -I..\..\..\..\INC\ST\STM32L1xx-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32L1xx-DSTM32L15XXB_128K -DUSE_STDPERIPH_DRIVER-o .\obj\bmp085.o --omf_browse .\obj\bmp085.crf --depend .\obj\bmp085.d)
+I (bmp085.h)(0x54A818B8)
 I (utils.h)(0x50E69B9C)
 I (..\..\..\..\INC\ST\STM32L1xx\stm32l1xx.h)(0x5495D5DD)
 I (C:\Keil\ARM\CMSIS\Include\core_cm3.h)(0x532C4C22)

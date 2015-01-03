@@ -23,8 +23,9 @@ volatile uint16_t systick_ms = 0, toggle_ms = 0;
 
 float humidity;
 
-float temperature;
+float temperature, temperatureP;
 
+int32_t preasure;
 
 volatile uint16_t dirty_cycle = 0, period = 0; //, gpioa_state;
 
@@ -64,15 +65,14 @@ int main(void){
 
 	char strDisp[25]; uint8_t dhtbuf[5]; 
 	uint8_t i2craw[5];
-	uint16_t UT;
-	uint32_t UP;
 	char rd;
+	struct bmp085_type bmp085;
 	
 	RCC_Configuration();
 	
 	Init_GPIOs();
 	
-  USART_open(USART1,9600);
+  USART_open(USART1, 9600);
 	
 	configureDMA();
 	
@@ -83,7 +83,11 @@ int main(void){
 	
 	//I2C_LowLevel_Init (I2C2, IS_I2C_CLOCK_SPEED(400000), 0xA0);
 	I2C_LowLevel_Init (I2C2, 1000, 0xA0);
+	
+	BMP085_RawCalibData(bmp085.calib.raw);
 		
+				sprintf(strDisp, "REDY!\n\r");		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
 	while(1){
 	
@@ -105,20 +109,21 @@ int main(void){
  		while (!flag_ADCDMA_TransferComplete);
     
 
-    Delay(100);
+    Delay(200);
 		
  		processTempData();
 
 
-		read_DHT11(dhtbuf);		
-		humidity = Humidity_DHT22(dhtbuf);
-		temperature = Temperature_DHT22(dhtbuf);
+		DHT11_RawRead(dhtbuf);		
+		humidity = DHT22_Humidity(dhtbuf);
+		temperature = DHT22_Temperature(dhtbuf);
 
-		RawTemperarure_bmp085(i2craw);
-		RawPreasure_bmp085(i2craw);
+		BMP085_RawTemperarure(i2craw);
+		BMP085_RawPreasure(i2craw);		
+		BMP085_UTUP(i2craw, &bmp085);
 		
-		UT = (i2craw[0] << 8) | i2craw[1];
-		UP = (i2craw[2] << 16) | (i2craw[3] << 8) | i2craw[4];
+		temperatureP = BMP085_Temperarure(&bmp085);
+		preasure = BMP085_Preasure(&bmp085);
 		
 		
 		if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)==SET)
@@ -157,12 +162,34 @@ int main(void){
 				sprintf(strDisp, "H_DHT=%2.1f%%.\n\r", humidity);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
-				sprintf(strDisp, "BMP085_RAW %02x%02x%02x%02x%02x\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
+				sprintf(strDisp, "BMP085_Calib %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x\n\r",
+					bmp085.calib.raw[0], bmp085.calib.raw[1], bmp085.calib.raw[2], bmp085.calib.raw[3], bmp085.calib.raw[4], bmp085.calib.raw[5],
+					bmp085.calib.raw[6], bmp085.calib.raw[7], bmp085.calib.raw[8], bmp085.calib.raw[9], bmp085.calib.raw[10]);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				sprintf(strDisp, "UT %4d\n\r",UT);		
+				sprintf(strDisp, "BMP085_RAW %02x%02x %02x%02x%02x\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				sprintf(strDisp, "UP %4d\n\r",UP);		
+				//sprintf(strDisp, "UT %4d\n\r",bmp085.UT);		
+				//USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				//sprintf(strDisp, "UP %4d\n\r",bmp085.UP);		
+				//USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+				//sprintf(strDisp, "A5 %d A6 %d MC %d MD %d\n\r",
+				//	bmp085.calib.AC5, bmp085.calib.AC6, bmp085.calib.MC, bmp085.calib.MD);		
+				//USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+				sprintf(strDisp, "T_BMP085 %2.1f\n\r", temperatureP);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				
+				
+				sprintf(strDisp, "X1 %d X2 %d B3 %d B4 %d B5 %d B7 %d\n\r",
+					bmp085.X1, bmp085.X2, bmp085.B3, bmp085.B4, bmp085.B5, bmp085.B7);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				
+				sprintf(strDisp, "P_BMP085 %d\n\r", preasure);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "P_BMP085 %3.1f\n\r", BMP085_Preasure_mm(preasure));		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
 
 //			}				
 			}
@@ -428,7 +455,7 @@ void RCC_Configuration(void){
 
 void Init_GPIOs (void){
   GPIO_InitTypeDef GPIO_InitStructure;
-	USART_InitTypeDef USART_InitStructure;
+//	USART_InitTypeDef USART_InitStructure;
 	
 //   /* USER button and WakeUP button init: GPIO set in input interrupt active mode */
   EXTI_InitTypeDef EXTI_InitStructure;
@@ -500,27 +527,29 @@ void Init_GPIOs (void){
 //   GPIO_Init(GPIOA, &GPIO_InitStructure);
 //   GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_TIM2);
 	
-/* USART input-output temperature */	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+///* USART input-output temperature */	
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+//  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
 
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-		
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
+//	GPIO_Init(GPIOA, &GPIO_InitStructure);
+//		
+//  GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
+//  GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
 
-	USART_InitStructure.USART_BaudRate = 115200;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-	USART_InitStructure.USART_Parity = USART_Parity_No;
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
+//	USART_InitStructure.USART_BaudRate = 115200;
+//	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+//	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+//	USART_InitStructure.USART_Parity = USART_Parity_No;
+//	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+//	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 
-	USART_Init(USART2, &USART_InitStructure);
-	USART_Cmd(USART2, ENABLE);
+//	USART_Init(USART2, &USART_InitStructure);
+//	USART_Cmd(USART2, ENABLE);
+	
+  USART_open(USART2, 115200);
 
 //	//USART1
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10;

@@ -16,7 +16,7 @@ uint16_t read_cycle(uint16_t cur_tics, uint8_t neg_tic){
  	return cnt_tics;
 }
 
-uint8_t read_DHT11(uint8_t *buf){
+uint8_t DHT11_RawRead(uint8_t *buf){
   GPIO_InitTypeDef GPIO_InitStructure;
 	uint16_t dt[42];
 	uint16_t cnt;
@@ -82,18 +82,26 @@ uint8_t read_DHT11(uint8_t *buf){
 	//return check_sum;
 }
 
-float Humidity_DHT22(uint8_t *buf){
+float DHT22_Humidity(uint8_t *buf){
 	float res;
 	res = buf[0] * 256 + buf[1];
 	res /= 10.0;
 	return res;
 }
 
-float Temperature_DHT22(uint8_t *buf){
+float DHT22_Temperature(uint8_t *buf){
 	float res;
 	res = (buf[2] & 0x7F)* 256 + buf[3];
   res /= 10.0;
   if (buf[2] & 0x80) res *= -1;
 	return res;
+}
+
+uint8_t DHT11_Humidity(uint8_t *buf){
+	return buf[0];
+}
+
+uint8_t DHT11_Temperature(uint8_t *buf){
+	return buf[2];;
 }
 

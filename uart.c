@@ -46,16 +46,15 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
 
-//		USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-//		USART_InitStructure.USART_StopBits = USART_StopBits_1;
-//		USART_InitStructure.USART_Parity = USART_Parity_No;
-//		USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-//		USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
-
     //return 0;
   } 
 	
 	USART_InitStructure.USART_BaudRate = baud;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 	USART_Init(USARTx, &USART_InitStructure);
 	USART_Cmd(USARTx, ENABLE);
 	
