@@ -1,7 +1,7 @@
 BMP085
 ======
 
-Simple Keil 4 project for STM32L-DISCOVERY board with DHT22 and BMP085 sensor connected.
+Simple Keil 4 project for STM32L-DISCOVERY board with DHT22, DS18B20 and BMP085 sensor connected.
 
 Preasure, temperature and humidity are transmited to USART.
 
@@ -19,6 +19,9 @@ PA03:  OUT
 BMP084
 PB11:  SDA
 PB10:  SLC
+DS18B20
+PA02:  OUT
+PA03:  OUT
 
 Responce example:
 
@@ -33,8 +36,8 @@ H_DHT=29.9%;
 BMP085_Calib 1e35 fbca c86d 836a 6223 6175 157a 0038 8000 d4bd 0980;
 BMP085_RAW 835a a03c80;
 T_BMP085=26.0C;
-P_BMP085=99390Pa=745.4mmHg.
-
+P_BMP085=99390Pa=745.4mmHg;
+T_DS=26.0C.
 
 
 
