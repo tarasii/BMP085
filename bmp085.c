@@ -114,33 +114,35 @@ int32_t BMP085_Preasure(struct bmp085_type *bmp085){
 	//B6 = B5 - 4000 
 	B6 = bmp085->B5 - 4000;
 
-	//X1 = (B2 * (B6 * B6 / 0x10000)) / 0x8000
+	//X1 = (B2 * (B6 * B6 / 0x1000)) / 0x800
 	X1 = B6 * B6;
 	X1 >>= 12;
 	X1 *= bmp085->calib.B2;
 	X1 >>= 11;
 	
+	//X2 = B6 * AC2 / 0x800
 	X2 = B6 * bmp085->calib.AC2;
 	X2 >>= 11;
 
 	//X3 = X1 + X2
 	X3 = X1 + X2;
-
+	
+	//B3 = ((AC1 * 4 + X3) + 2) / 4
 	B3 = (bmp085->calib.AC1 * 4) + X3;
 	B3 <<= BMP085_OSRS;
 	B3 += 2;
 	B3 /= 4;
-	bmp085->B3 = B3;
+	//bmp085->B3 = B3;
 
+	//X1 = (AC3 * B6) / 0x2000
 	X1 = bmp085->calib.AC3 * B6;
 	X1 >>= 13;
-	bmp085->X1 = X1;
-
+	
+	// X2 = ((B6 * B6)/0x1000) * B1 / 0x10000
 	X2 = B6 * B6;
 	X2 >>= 12;
 	X2 *= bmp085->calib.B1;
 	X2 >>= 16;
-	bmp085->X2 = X2;
   
 	//X3 = (X1 + X2 + 2)/4
 	X3 = X1 + X2;
@@ -148,24 +150,32 @@ int32_t BMP085_Preasure(struct bmp085_type *bmp085){
 	//X3 >>= 2;
 	X3 /= 2;
 
+	//B4 = (X4 + 32768) * AC4
 	B4 = (uint32_t) (X3 + 32768) * bmp085->calib.AC4;
 	B4 >>= 15;
-	bmp085->B4 = B4;
+	//bmp085->B4 = B4;
 
+	//B7 = (UP - B3) * 50000
 	B7 = (uint32_t) (bmp085->UP - B3) * (50000 >> BMP085_OSRS);
-	bmp085->B7 = B7;
-
+	//bmp085->B7 = B7;
+	
+	//P = B7 * 2 / B4
 	if (B7 < 0x80000000) P = B7 * 2 / B4;
-	else P = B7 * B4 / 2;
+	else P = B7 / B4 * 2;
 
+	//X1 = (P / 80 * P / 80 * 3038) / 0x10000
 	X1 = (P >> 8);
 	X1 *= X1 * 3038;
 	X1 >>= 16;
+	//bmp085->X1 = X1;
 
+	//X2 = (-7357 * P) / 0x10000
 	X2 = -7357 * P;
 	X2 >>= 16;
+	//bmp085->X2 = X2;
 	
-	P = ((P + (X1 + X2 + 3791) / 16) * 3) >> 4;
+	//P = P + (X1 + X2 + 3791) / 16
+	P = P + (X1 + X2 + 3791) / 16;
 
 	return P;
 
@@ -173,7 +183,8 @@ int32_t BMP085_Preasure(struct bmp085_type *bmp085){
 
 float BMP085_Preasure_mm(int32_t P){
 	
-	return P * 0.0075;
+	//return P * 0.0075;
+	return (float) P * 3 / 400;
 
 }
 

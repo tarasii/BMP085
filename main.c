@@ -80,14 +80,12 @@ int main(void){
 	
 	Init_tim_cnt();
 
-	
-	//I2C_LowLevel_Init (I2C2, IS_I2C_CLOCK_SPEED(400000), 0xA0);
 	I2C_LowLevel_Init (I2C2, 1000, 0xA0);
 	
 	BMP085_RawCalibData(bmp085.calib.raw);
 		
-				sprintf(strDisp, "REDY!\n\r");		
-				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+	sprintf(strDisp, "REDY!\n\r");		
+	USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
 	while(1){
 	
@@ -108,8 +106,7 @@ int main(void){
 
  		while (!flag_ADCDMA_TransferComplete);
     
-
-    Delay(200);
+    Delay(500);
 		
  		processTempData();
 
@@ -151,43 +148,24 @@ int main(void){
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 				sprintf(strDisp, "Tcore=%2dC;\n\r", temperature_C);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-//				//sprintf(strDisp, "t_dht=%2d.%dC;", dhtbuf[2], dhtbuf[3]);				
-//				//USART_DMA(strDisp, strlen(strDisp));
-//				//sprintf(strDisp, "RH _dht=%2d.%d%%;", dhtbuf[0], dhtbuf[1]);				
-//				//USART_DMA(strDisp, strlen(strDisp));
+
 				sprintf(strDisp, "DHT_RAW=%02x%02x%02x%02x%02x;\n\r", dhtbuf[0], dhtbuf[1], dhtbuf[2], dhtbuf[3], dhtbuf[4]);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 				sprintf(strDisp, "T_DHT=%2.1fC;\n\r", temperature);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
-				sprintf(strDisp, "H_DHT=%2.1f%%.\n\r", humidity);				
+				sprintf(strDisp, "H_DHT=%2.1f%%;\n\r", humidity);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
-				sprintf(strDisp, "BMP085_Calib %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x\n\r",
+				sprintf(strDisp, "BMP085_Calib %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
 					bmp085.calib.raw[0], bmp085.calib.raw[1], bmp085.calib.raw[2], bmp085.calib.raw[3], bmp085.calib.raw[4], bmp085.calib.raw[5],
 					bmp085.calib.raw[6], bmp085.calib.raw[7], bmp085.calib.raw[8], bmp085.calib.raw[9], bmp085.calib.raw[10]);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				sprintf(strDisp, "BMP085_RAW %02x%02x %02x%02x%02x\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
+				sprintf(strDisp, "BMP085_RAW %02x%02x %02x%02x%02x;\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				//sprintf(strDisp, "UT %4d\n\r",bmp085.UT);		
-				//USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				//sprintf(strDisp, "UP %4d\n\r",bmp085.UP);		
-				//USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
-				//sprintf(strDisp, "A5 %d A6 %d MC %d MD %d\n\r",
-				//	bmp085.calib.AC5, bmp085.calib.AC6, bmp085.calib.MC, bmp085.calib.MD);		
-				//USART_DMA_send(USART1, strDisp, strlen(strDisp));
-
-				sprintf(strDisp, "T_BMP085 %2.1f\n\r", temperatureP);		
-				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				
-				
-				sprintf(strDisp, "X1 %d X2 %d B3 %d B4 %d B5 %d B7 %d\n\r",
-					bmp085.X1, bmp085.X2, bmp085.B3, bmp085.B4, bmp085.B5, bmp085.B7);		
-				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				
-				sprintf(strDisp, "P_BMP085 %d\n\r", preasure);		
-				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				sprintf(strDisp, "P_BMP085 %3.1f\n\r", BMP085_Preasure_mm(preasure));		
+				sprintf(strDisp, "T_BMP085=%2.1fC;\n\r", temperatureP);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
+				sprintf(strDisp, "P_BMP085=%dPa=%3.1fmmHg.\n\r", preasure, BMP085_Preasure_mm(preasure));		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
 
@@ -197,8 +175,6 @@ int main(void){
  		if (uint16_time_diff(systick_ms, toggle_ms) >= 500)
  		{
  			toggle_ms = systick_ms;
-
-			//I2C_Write(I2C2,dhtbuf,5,0xA1);
 
   		switch (mode){
 				case 0:				

@@ -41,11 +41,11 @@ struct bmp085_type
 	uint16_t UT;
 	uint32_t UP;
 	int32_t B5;
-	int32_t B3;
-	uint32_t B4;
-	uint32_t B7;
-	int32_t X1;
-	int32_t X2;
+//	int32_t B3;
+//	uint32_t B4;
+//	uint32_t B7;
+//	int32_t X1;
+//	int32_t X2;
 };
 
 Status BMP085_RawCalibData(uint16_t *buf);
