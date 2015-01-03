@@ -11,15 +11,15 @@ To get board responce, we need to send any char to USART
 
 pins:
 
-USART2
+RS232 (USART2)
 PA10:  TxD
 PA09:  RxD
 DHT22
 PA03:  OUT
-BMP084
+BMP084 (I2C2)
 PB11:  SDA
 PB10:  SLC
-DS18B20
+DS18B20 (USART1)
 PA02:  OUT
 PA03:  OUT
 
