@@ -8,6 +8,7 @@
 ".\obj\bmp085.o"
 ".\obj\onewire.o"
 ".\obj\18b20.o"
+".\obj\leds.o"
 ".\obj\stm32l1xx_gpio.o"
 ".\obj\stm32l1xx_rcc.o"
 ".\obj\stm32l1xx_rtc.o"

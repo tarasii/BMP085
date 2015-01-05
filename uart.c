@@ -58,6 +58,7 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
 	USART_Init(USARTx, &USART_InitStructure);
 	USART_Cmd(USARTx, ENABLE);
 	
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	//return -1;
 
 }
@@ -134,7 +135,7 @@ int uart_putc(USART_TypeDef* USARTx, uint32_t c)
 
 void USART_print(USART_TypeDef* USARTx, char *buf, uint8_t len){
 	uint8_t i;
-	for (i=0;i<len;i++){
+	for (i=0; i<len; i++){
 		if( !buf[i] ) break;
 		USART_SendData(USARTx, buf[i]);
 		Delay(5);

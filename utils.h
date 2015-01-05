@@ -17,10 +17,6 @@
 #define BUTTON_GPIO_PORT	GPIOA
 #define USER_GPIO_PIN		GPIO_Pin_0
 
-#define LD_PORT 		GPIOB
-#define LD_GREEN 		GPIO_Pin_7
-#define LD_BLUE     GPIO_Pin_6
-
 /* Exported macro ------------------------------------------------------------*/
 /* MACROs for SET, RESET or TOGGLE Output port */
 #define GPIO_HIGH(a,b) 		a->BSRRL = b

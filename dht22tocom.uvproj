@@ -440,6 +440,21 @@
               <FileType>1</FileType>
               <FilePath>.\bmp085.c</FilePath>
             </File>
+            <File>
+              <FileName>onewire.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\onewire.c</FilePath>
+            </File>
+            <File>
+              <FileName>18b20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\18b20.c</FilePath>
+            </File>
+            <File>
+              <FileName>leds.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\leds.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

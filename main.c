@@ -73,6 +73,8 @@ int main(void){
 	
 	Init_GPIOs();
 	
+	led_init();
+	
   USART_open(USART1, 9600);   //for RS232
   USART_open(USART2, 115200); //for DS18B20
 	
@@ -351,54 +353,6 @@ void processTempData(void)
 }
 
 
-void Init_tim_cnt(void){
-	TIM_TimeBaseInitTypeDef TIM_InitBaseStructure;
- 	TIM_ICInitTypeDef TIM_ICInitStruct;
-  //NVIC_InitTypeDef NVIC_InitStructure; //create NVIC structure
-	
-	TIM_TimeBaseStructInit(&TIM_InitBaseStructure);
-	TIM_InitBaseStructure.TIM_Prescaler = 0;
-	TIM_TimeBaseInit(TIM2, &TIM_InitBaseStructure);
-	
-  TIM_ICStructInit(&TIM_ICInitStruct);
-  //TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
-  TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
-  //TIM_ICInit(TIM2, &TIM_ICInitStruct);
-	TIM_PWMIConfig(TIM2, &TIM_ICInitStruct); 
-
-	TIM_SelectInputTrigger(TIM2, TIM_TS_TI2FP2);
-	TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_Reset);
-	TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
-
-  TIM_ITConfig(TIM2, TIM_IT_CC2, ENABLE);
-	
-//   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-//   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-//   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-//   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-//   NVIC_Init(&NVIC_InitStructure);	
-	
-	TIM_Cmd(TIM2, ENABLE);
-	
-	NVIC_EnableIRQ(TIM2_IRQn);	
-}
-
-void DAC_Config(void)
-{
-  DAC_InitTypeDef DAC_InitStructure;
-
-  /* DAC channel1 Configuration */
-  DAC_InitStructure.DAC_Trigger = DAC_Trigger_None;
-  DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
-  DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-
-  /* DAC Channel1 Init */
-  DAC_Init(DAC_Channel_1, &DAC_InitStructure);
-  /* Enable DAC Channel1 */
-  DAC_Cmd(DAC_Channel_1, ENABLE);
-}
-
-
 void RCC_Configuration(void){
 
   //SysTick_Config(SystemCoreClock / 4000);
@@ -409,29 +363,9 @@ void RCC_Configuration(void){
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOC| RCC_AHBPeriph_GPIOD| RCC_AHBPeriph_GPIOE| RCC_AHBPeriph_GPIOH, ENABLE);     
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2  | RCC_APB1Periph_DAC, ENABLE);	
-	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3, ENABLE);
 	
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_SYSCFG | RCC_APB2Periph_USART1, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_SYSCFG, ENABLE);
 
-	/* Allow access to the RTC */
-  PWR_RTCAccessCmd(ENABLE);
-
-//   /* Reset Backup Domain */
-//   RCC_RTCResetCmd(ENABLE);
-//   RCC_RTCResetCmd(DISABLE);
-
-  /* LSE Enable */
-  RCC_LSEConfig(RCC_LSE_ON); //do not touch LSE to prevent RTC calendar reset
-
-  /* Wait till LSE is ready */
-	while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)
-	{}
-  
-  RCC_RTCCLKCmd(ENABLE);
-   
-  /* LCD Clock Source Selection */
-  RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE); //rtc 
 }  
 
 
@@ -468,15 +402,6 @@ void Init_GPIOs (void){
 
   NVIC_Init(&NVIC_InitStructure); 
 
-/* Configure the GPIO_LED pins  LD3 & LD4*/
-  GPIO_InitStructure.GPIO_Pin = LD_GREEN|LD_BLUE;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(LD_PORT, &GPIO_InitStructure);
-  GPIO_LOW(LD_PORT,LD_GREEN);	
-  GPIO_LOW(LD_PORT,LD_BLUE);
 
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
 //  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -489,26 +414,6 @@ void Init_GPIOs (void){
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3  ;                               
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);  
-
-/* TIM input humidity */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1  ;                               
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_TIM2);
-	
-// 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5  ;                               
-//   //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-//   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-//   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-//   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-//   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-//   GPIO_Init(GPIOA, &GPIO_InitStructure);
-//   GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_TIM2);
-	
 	
 
 /* ADC input */
@@ -516,15 +421,7 @@ void Init_GPIOs (void){
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   GPIO_Init( IDD_MEASURE_PORT, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3  ; //preasure metr                              
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-  GPIO_Init( GPIOC, &GPIO_InitStructure);  
 
-  /* Configure PA.04 (DAC_OUT1), PA.05 (DAC_OUT2) as analog */
-//   GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4 | GPIO_Pin_5;
-//   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-//   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-//   GPIO_Init(GPIOA, &GPIO_InitStructure);
 } 
 
 FunctionalState  testUserCalibData(void)

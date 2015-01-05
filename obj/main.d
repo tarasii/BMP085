@@ -38,3 +38,4 @@
 .\obj\main.o: i2c.h
 .\obj\main.o: 18b20.h
 .\obj\main.o: onewire.h
+.\obj\main.o: leds.h

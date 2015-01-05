@@ -12,6 +12,8 @@
 #include "uart.h"
 #include "bmp085.h"
 #include "18b20.h"
+#include "leds.h"
+
 
 
 //HCH1000+555
