@@ -44,6 +44,7 @@ typedef struct {
 	uint32_t tempAVG;
 	int32_t temperature_C;
 	float voltage_V;	
+	uint32_t Chanel13AVG; 
 } ADC_Typedef;
 
 /* Exported macro ------------------------------------------------------------*/

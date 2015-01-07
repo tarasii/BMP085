@@ -17,6 +17,7 @@
 #include "tim.h"
 #include "rtc.h"
 #include "button.h"
+#include "dac.h"
 
 
 /* Exported types ------------------------------------------------------------*/

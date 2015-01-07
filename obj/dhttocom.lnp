@@ -13,6 +13,8 @@
 ".\obj\rtc.o"
 ".\obj\pin.o"
 ".\obj\button.o"
+".\obj\dac.o"
+".\obj\tim.o"
 ".\obj\stm32l1xx_gpio.o"
 ".\obj\stm32l1xx_rcc.o"
 ".\obj\stm32l1xx_rtc.o"

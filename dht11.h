@@ -11,8 +11,10 @@
 #define DHT11_OK 0
 #define DHT11_NO_CONN 1
 #define DHT11_CS_ERROR 2
-#define DHT11_PORT GPIOA
-#define DHT11_PIN GPIO_Pin_5
+//#define DHT11_PORT GPIOA
+//#define DHT11_PIN GPIO_Pin_5
+#define DHT11_PORT GPIOC
+#define DHT11_PIN GPIO_Pin_2
 
 /* Exported macro ------------------------------------------------------------*/
 

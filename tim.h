@@ -25,15 +25,17 @@
 //+------+------+------+------+
 //| PB6  | PB7  | PB8  | PB9  |
 //+------+------+------+------+
-#define TIM2_CH1 		GPIO_Pin_0
-//#define TIM2_CH1 		GPIO_Pin_5
+//#define TIM2_CH1 		GPIO_Pin_0
+#define TIM2_CH1 		GPIO_Pin_5
 #define TIM2_GPIO 	GPIOA
+#define TIM4_CH3 		GPIO_Pin_8
+#define TIM4_GPIO 	GPIOB
 
 
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions ------------------------------------------------------- */
-void tim_init(void);
-void Init_tim_cnt(void);
+void tim_init_cnt(void);
+void tim_init_pwmout(void);
 
 #endif /* __TIM_H */

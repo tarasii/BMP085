@@ -470,6 +470,11 @@
               <FileType>1</FileType>
               <FilePath>.\pin.c</FilePath>
             </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

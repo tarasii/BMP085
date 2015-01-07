@@ -1,8 +1,7 @@
 #include "dac.h"
 
 //example:
-//dac_init(DAC_OUT1 | DAC_OUT2);
-//dac_init(DAC_OUT1);
+//dac_init(DAC_Channel_1, DAC_OUT1);
 void dac_init(uint32_t DAC_Channel_X, uint16_t GPIO_Pin){
 
   GPIO_InitTypeDef GPIO_InitStructure; 
@@ -47,7 +46,8 @@ void dac_set(uint32_t DAC_Channel_X, uint16_t value){
 	
 }
 
-void example(void){
-	dac_init(DAC_Channel_1, DAC_OUT1);
-	dac_set(DAC_Channel_1, 1023);
-}
+//void example(void){
+//	dac_init(DAC_Channel_1, DAC_OUT1);
+//	dac_set(DAC_Channel_1, 1023);
+//}
+

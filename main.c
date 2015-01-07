@@ -16,7 +16,7 @@ float temperature, temperatureP;
 
 int32_t preasure;
 
-volatile uint16_t dirty_cycle = 0, period = 0; //, gpioa_state;
+volatile uint16_t dirty_cycle = 0, period = 0; // ;
 
 volatile uint8_t mode = 0, first_time_in_mode = 1, flag_UserButton = 0;
 
@@ -33,13 +33,13 @@ void EXTI0_IRQHandler(void)
 
 void TIM2_IRQHandler(void)
 {
-  //if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
-  //{
+  if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)
+  {
     /* Даём знать, что обработали прерывание */
     TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
     period = TIM_GetCapture1(TIM2);
     dirty_cycle = TIM_GetCapture2(TIM2);
-	//}
+	}
 }
 
 void DMA1_Channel1_IRQHandler    (void)
@@ -79,7 +79,13 @@ int main(void){
 	I2C_LowLevel_Init (I2C2, 1000, 0xA0);
 	
 	BMP085_RawCalibData(bmp085.calib.raw);
-		
+
+	dac_init(DAC_Channel_1, DAC_OUT1);
+	dac_set(DAC_Channel_1, 500);
+	
+	tim_init_pwmout();
+	tim_init_cnt();
+
 	sprintf(strDisp, "REDY!\n\r");		
 	USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
@@ -176,6 +182,12 @@ int main(void){
 		sprintf(strDisp, "UART=%d;\n\r", rd);		
 		USART_DMA_send(USART1, strDisp, strlen(strDisp));
 		sprintf(strDisp, "MODE=%d;\n\r", mode);		
+		USART_DMA_send(USART1, strDisp, strlen(strDisp));
+		sprintf(strDisp, "CH13_RAW=%d;\n\r", ADC_RES.Chanel13AVG);		
+		USART_DMA_send(USART1, strDisp, strlen(strDisp));
+		sprintf(strDisp, "T=%d;\n\r", period);		
+		USART_DMA_send(USART1, strDisp, strlen(strDisp));
+		sprintf(strDisp, "t=%d;\n\r", dirty_cycle);		
 		USART_DMA_send(USART1, strDisp, strlen(strDisp));
 		sprintf(strDisp, "V_ref_RAW=%d;\n\r", ADC_RES.refAVG);		
 		USART_DMA_send(USART1, strDisp, strlen(strDisp));

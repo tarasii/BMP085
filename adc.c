@@ -102,14 +102,14 @@ void processTempData(ADC_Typedef* ADC_RES)
 //  /* Devide sum up result by 4 for the temperature average calculation*/
 //  altTempAVG = dataSum / 4 ;
 
-//	Preasure math average
-//  dataSum = 0;
-//  /* Sum up all mesured data for reference temperature average calculation */ 
-//  for (index=MAX_TEMP_CHNL+4; index < ADC_CONV_BUFF_SIZE-4; index++){
-//    dataSum += ADC_ConvertedValueBuff[index];
-//  }
-//  /* Devide sum up result by 4 for the temperature average calculation*/
-//  preasureAVG = dataSum / 4 ;
+	//Preasure math average
+  dataSum = 0;
+  /* Sum up all mesured data for reference temperature average calculation */ 
+  for (index=MAX_TEMP_CHNL+4; index < ADC_CONV_BUFF_SIZE-4; index++){
+    dataSum += ADC_ConvertedValueBuff[index];
+  }
+  /* Devide sum up result by 4 for the temperature average calculation*/
+  ADC_RES->Chanel13AVG = dataSum / 4 ;
 
   dataSum = 0;
   /* Sum up all mesured data for reference temperature average calculation */ 

@@ -44,3 +44,4 @@
 .\obj\main.o: tim.h
 .\obj\main.o: rtc.h
 .\obj\main.o: button.h
+.\obj\main.o: dac.h
