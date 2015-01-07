@@ -32,3 +32,4 @@
 .\obj\dht11.o: ..\STM32L1xx_StdPeriph_Driver\inc\misc.h
 .\obj\dht11.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
 .\obj\dht11.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\obj\dht11.o: pin.h

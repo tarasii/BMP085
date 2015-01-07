@@ -11,7 +11,6 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
 
     // Turn on clocks
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 
 		GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9 | GPIO_Pin_10;
@@ -25,13 +24,11 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_USART1);
 
-    //return 0;
-  } else {
+  } //else {
 	
-  //if (USARTx == USART2) {
+  if (USARTx == USART2) {
 
     // Turn on clocks
-
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
@@ -46,8 +43,26 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
 		GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
 
-    //return 0;
   } 
+	
+  if (USARTx == USART3) {
+
+    // Turn on clocks
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+
+		GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10 | GPIO_Pin_11;
+		GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+
+		GPIO_Init(GPIOC, &GPIO_InitStructure);
+		
+		GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3);
+		GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3);
+
+  }
 	
 	USART_InitStructure.USART_BaudRate = baud;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;

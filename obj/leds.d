@@ -32,3 +32,4 @@
 .\obj\leds.o: ..\STM32L1xx_StdPeriph_Driver\inc\misc.h
 .\obj\leds.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
 .\obj\leds.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\obj\leds.o: pin.h

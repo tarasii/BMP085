@@ -163,7 +163,7 @@ Status I2C_Write(I2C_TypeDef* I2Cx, const uint8_t* buf,  uint32_t nbyte, uint8_t
 
 		Timed(!I2C_GetFlagStatus(I2Cx, I2C_FLAG_BTF));  
 		I2C_GenerateSTOP(I2Cx, ENABLE);
-		Timed(I2C_GetFlagStatus(I2C1, I2C_FLAG_STOPF));
+		Timed(I2C_GetFlagStatus(I2Cx, I2C_FLAG_STOPF));
   }
 	
 	return Success;

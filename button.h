@@ -1,23 +1,20 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __UTILS_H
-#define __UTILS_H
+#ifndef __BUTTON_H
+#define __BUTTON_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l1xx.h"
-#include <stdio.h>
-#include <string.h>
-//#include <misc.h>
+#include "utils.h"
+#include "pin.h"
 
-/* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define bool _Bool
-#define FALSE 0
-#define TRUE !FALSE
+#define BUTTON_GPIO_PORT	GPIOA
+#define USER_GPIO_PIN		GPIO_Pin_0
 
 /* Exported macro ------------------------------------------------------------*/
-/* MACROs for SET, RESET or TOGGLE Output port */
 
 /* Exported functions ------------------------------------------------------- */
-void Delay(uint32_t nTime);
+void button_init_irq (void);
+void button_init (void);
 
-#endif /* __UTILS_H */
+#endif /* __BUTTON_H */
+

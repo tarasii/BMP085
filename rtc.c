@@ -25,21 +25,21 @@ void rtc_init(void){
 	
 }
 
-void example(void){
-	char strDisp[25];
-	RTC_DateTypeDef RTCDateStr;
-	RTC_TimeTypeDef RTCTimeStr;
-	//to set time
-	RTCDateStr.RTC_Year = 2015;
-	RTCDateStr.RTC_Month = 1;
-	RTCDateStr.RTC_Date = 1;
-	RTCTimeStr.RTC_Hours = 12;
-	RTCTimeStr.RTC_Minutes = 0;
-	RTCTimeStr.RTC_Seconds = 0;
-	RTC_SetTime(RTC_Format_BIN, &RTCTimeStr);
-	RTC_SetDate(RTC_Format_BIN, &RTCDateStr);
-	//to get time
-	RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
-	RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
-	printf(strDisp, "%02d/%02d/%02d %02d:%02d:%02d", RTCDateStr.RTC_Year, RTCDateStr.RTC_Month, RTCDateStr.RTC_Date, RTCTimeStr.RTC_Hours, RTCTimeStr.RTC_Minutes, RTCTimeStr.RTC_Seconds);
-}
+//void rtc_example(void){
+//	char strDisp[25];
+//	RTC_DateTypeDef RTCDateStr;
+//	RTC_TimeTypeDef RTCTimeStr;
+//	//to set time
+//	RTCDateStr.RTC_Year = 15;
+//	RTCDateStr.RTC_Month = 1;
+//	RTCDateStr.RTC_Date = 1;
+//	RTCTimeStr.RTC_Hours = 12;
+//	RTCTimeStr.RTC_Minutes = 0;
+//	RTCTimeStr.RTC_Seconds = 0;
+//	RTC_SetTime(RTC_Format_BIN, &RTCTimeStr);
+//	RTC_SetDate(RTC_Format_BIN, &RTCDateStr);
+//	//to get time
+//	RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
+//	RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
+//	printf(strDisp, "%02d/%02d/%02d %02d:%02d:%02d", RTCDateStr.RTC_Year, RTCDateStr.RTC_Month, RTCDateStr.RTC_Date, RTCTimeStr.RTC_Hours, RTCTimeStr.RTC_Minutes, RTCTimeStr.RTC_Seconds);
+//}

@@ -17,17 +17,19 @@ uint16_t read_cycle(uint16_t cur_tics, uint8_t neg_tic){
 }
 
 uint8_t DHT11_RawRead(uint8_t *buf){
-  GPIO_InitTypeDef GPIO_InitStructure;
+//  GPIO_InitTypeDef GPIO_InitStructure;
 	uint16_t dt[42];
 	uint16_t cnt;
 	uint8_t i, check_sum; 
 	
-  GPIO_InitStructure.GPIO_Pin = DHT11_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(DHT11_PORT, &GPIO_InitStructure);
+//  GPIO_InitStructure.GPIO_Pin = DHT11_PIN;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+//  GPIO_Init(DHT11_PORT, &GPIO_InitStructure);
+	pin_mode(DHT11_PORT, DHT11_PIN, GPIO_MODE_OUT2_PP);
+	
 
 	//reset DHT11
 	Delay(500);
@@ -35,10 +37,11 @@ uint8_t DHT11_RawRead(uint8_t *buf){
 	Delay(20);
  	GPIO_HIGH(DHT11_PORT,DHT11_PIN);
 	
-  GPIO_InitStructure.GPIO_Pin = DHT11_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-  GPIO_Init(DHT11_PORT, &GPIO_InitStructure);
+//  GPIO_InitStructure.GPIO_Pin = DHT11_PIN;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+//  GPIO_Init(DHT11_PORT, &GPIO_InitStructure);
+	pin_mode(DHT11_PORT, DHT11_PIN, GPIO_MODE_IN);
 	
   //start reading	
  	cnt = 0; 

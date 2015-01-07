@@ -2,18 +2,20 @@
 
 void tim_init(void){
 
+  GPIO_InitTypeDef GPIO_InitStructure; 
+	
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);	
 	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3, ENABLE);
 
 /* TIM inputs */
-	GPIO_InitStructure.GPIO_Pin = TIM2_PIN1  ;                               
+	GPIO_InitStructure.GPIO_Pin = TIM2_CH1  ;                               
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_Init(TIM2_GPIO, &GPIO_InitStructure);
 
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_TIM2);
+  GPIO_PinAFConfig(TIM2_GPIO, GPIO_PinSource1, GPIO_AF_TIM2);
 	
 // 	GPIO_InitStructure.GPIO_Pin = TIM2_PIN5  ;                               
 //   //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;

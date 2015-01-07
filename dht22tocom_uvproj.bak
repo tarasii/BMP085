@@ -450,6 +450,26 @@
               <FileType>1</FileType>
               <FilePath>.\18b20.c</FilePath>
             </File>
+            <File>
+              <FileName>leds.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\leds.c</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>pin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\pin.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

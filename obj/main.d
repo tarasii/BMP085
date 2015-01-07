@@ -33,9 +33,14 @@
 .\obj\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
 .\obj\main.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
 .\obj\main.o: dht11.h
+.\obj\main.o: pin.h
 .\obj\main.o: uart.h
 .\obj\main.o: bmp085.h
 .\obj\main.o: i2c.h
 .\obj\main.o: 18b20.h
 .\obj\main.o: onewire.h
 .\obj\main.o: leds.h
+.\obj\main.o: adc.h
+.\obj\main.o: tim.h
+.\obj\main.o: rtc.h
+.\obj\main.o: button.h
