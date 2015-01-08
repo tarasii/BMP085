@@ -36,6 +36,7 @@ PA04: PC03
 
 Responce example:
 UART=103;
+MODE=3;
 V_ref_RAW=1689;
 Vref=2.97V;
 T_core_RAW=677;
