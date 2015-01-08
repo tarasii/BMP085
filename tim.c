@@ -47,7 +47,7 @@ void tim_init_cnt(void){
 	NVIC_EnableIRQ(TIM2_IRQn);	
 }
 
-void tim_init_pwmout(void){
+void tim_init_pwmout(uint32_t period, uint32_t dirty_cucle){
 
 	TIM_TimeBaseInitTypeDef TIM_InitBaseStructure;
   GPIO_InitTypeDef GPIO_InitStructure; 
@@ -64,7 +64,7 @@ void tim_init_pwmout(void){
 	GPIO_PinAFConfig(TIM4_GPIO, GPIO_PinSource8, GPIO_AF_TIM4);
 	
 	TIM_OCInit.TIM_OCMode = TIM_OCMode_PWM2;
-	TIM_OCInit.TIM_Pulse = 2000;
+	TIM_OCInit.TIM_Pulse = dirty_cucle;
 	TIM_OCInit.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInit.TIM_OCPolarity = TIM_OCPolarity_High;
 
@@ -74,7 +74,7 @@ void tim_init_pwmout(void){
 	TIM_TimeBaseStructInit(&TIM_InitBaseStructure);
 	TIM_InitBaseStructure.TIM_Prescaler = 0;
 	TIM_InitBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_InitBaseStructure.TIM_Period = 8000;
+	TIM_InitBaseStructure.TIM_Period = period;
 	TIM_InitBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseInit(TIM4, &TIM_InitBaseStructure);
 	

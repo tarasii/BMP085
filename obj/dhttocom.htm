@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\obj\dhttocom.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\obj\dhttocom.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.03 [Build 76]: Last Updated: Thu Jan 08 00:11:44 2015
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.03 [Build 76]: Last Updated: Thu Jan 08 22:28:51 2015
 <BR><P>
 <H3>Maximum Stack Usage =        304 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -357,7 +357,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[37]"></a>main</STRONG> (Thumb, 1408 bytes, Stack size 152 bytes, main.o(.text))
+<P><STRONG><a name="[37]"></a>main</STRONG> (Thumb, 1412 bytes, Stack size 152 bytes, main.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 304<LI>Call Chain = main &rArr; DHT11_RawRead &rArr; pin_mode
 </UL>
 <BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tim_init_pwmout
@@ -878,8 +878,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[53]"></a>tim_init_pwmout</STRONG> (Thumb, 152 bytes, Stack size 32 bytes, tim.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = tim_init_pwmout &rArr; GPIO_PinAFConfig
+<P><STRONG><a name="[53]"></a>tim_init_pwmout</STRONG> (Thumb, 152 bytes, Stack size 40 bytes, tim.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = tim_init_pwmout &rArr; GPIO_PinAFConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TimeBaseStructInit
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TimeBaseInit

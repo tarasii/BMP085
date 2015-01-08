@@ -480,6 +480,11 @@
               <FileType>1</FileType>
               <FilePath>.\dac.c</FilePath>
             </File>
+            <File>
+              <FileName>tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

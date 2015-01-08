@@ -83,7 +83,7 @@ int main(void){
 	dac_init(DAC_Channel_1, DAC_OUT1);
 	dac_set(DAC_Channel_1, 500);
 	
-	tim_init_pwmout();
+	tim_init_pwmout(8000, 2000);
 	tim_init_cnt();
 
 	sprintf(strDisp, "REDY!\n\r");		
@@ -109,11 +109,10 @@ int main(void){
 
 			GPIO_TOGGLE(LD_PORT,LD_BLUE);
 			
+			//internal ADC with DMA
 			clearADCDMA_TransferComplete();
 			acquireTemperatureData();
-
-			while (!flag_ADCDMA_TransferComplete);
-			
+			while (!flag_ADCDMA_TransferComplete);			
 			processTempData(&ADC_RES);
 
 			DHT11_RawRead(dhtbuf);		
@@ -132,6 +131,7 @@ int main(void){
 			RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
 			RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
 			
+			//mode selector
 			switch (mode){
 			case 0:				
 				if (first_time_in_mode==1) {				

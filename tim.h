@@ -36,6 +36,6 @@
 
 /* Exported functions ------------------------------------------------------- */
 void tim_init_cnt(void);
-void tim_init_pwmout(void);
+void tim_init_pwmout(uint32_t period, uint32_t dirty_cucle);
 
 #endif /* __TIM_H */
