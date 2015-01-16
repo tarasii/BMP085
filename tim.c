@@ -27,6 +27,8 @@ void tim_init_cnt(void){
   TIM_ICStructInit(&TIM_ICInitStruct);
   TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
   //TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
+//  TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_Rising;
+//  TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI;
   //TIM_ICInit(TIM2, &TIM_ICInitStruct);
 	TIM_PWMIConfig(TIM2, &TIM_ICInitStruct); 
 
