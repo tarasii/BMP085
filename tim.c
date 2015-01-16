@@ -8,6 +8,7 @@ void tim_init_cnt(void){
   GPIO_InitTypeDef GPIO_InitStructure; 
 	
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	
 	/* TIM inputs */
 	GPIO_InitStructure.GPIO_Pin = TIM2_CH1;                               
@@ -19,18 +20,20 @@ void tim_init_cnt(void){
 
   GPIO_PinAFConfig(TIM2_GPIO, GPIO_PinSource5, GPIO_AF_TIM2);
 	
-	
 	TIM_TimeBaseStructInit(&TIM_InitBaseStructure);
-	TIM_InitBaseStructure.TIM_Prescaler = 0;
+//	TIM_InitBaseStructure.TIM_Prescaler = 0;
 	TIM_TimeBaseInit(TIM2, &TIM_InitBaseStructure);
 	
   TIM_ICStructInit(&TIM_ICInitStruct);
   TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
   //TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
+//  TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_Rising;
+//  TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI;
   //TIM_ICInit(TIM2, &TIM_ICInitStruct);
 	TIM_PWMIConfig(TIM2, &TIM_ICInitStruct); 
 
-	TIM_SelectInputTrigger(TIM2, TIM_TS_TI2FP2);
+	//TIM_SelectInputTrigger(TIM2, TIM_TS_TI2FP2);
+	TIM_SelectInputTrigger(TIM2, TIM_TS_TI1FP1);
 	TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_Reset);
 	TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
 
@@ -63,7 +66,7 @@ void tim_init_pwmout(uint32_t period, uint32_t dirty_cucle){
 	GPIO_Init(TIM4_GPIO, &GPIO_InitStructure);
 	GPIO_PinAFConfig(TIM4_GPIO, GPIO_PinSource8, GPIO_AF_TIM4);
 	
-	TIM_OCInit.TIM_OCMode = TIM_OCMode_PWM2;
+	TIM_OCInit.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInit.TIM_Pulse = dirty_cucle;
 	TIM_OCInit.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInit.TIM_OCPolarity = TIM_OCPolarity_High;
