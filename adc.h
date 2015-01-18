@@ -7,7 +7,10 @@
 
 /* Exported constants --------------------------------------------------------*/
 
-#define MAX_TEMP_CHNL 8
+#define MAX_ADC_CHNL 12
+
+#define MAX_TEMP_CHNL 4
+
 #define ADC_CONV_BUFF_SIZE 20
 
 #define FACTORY_CALIB_BASE        ((uint32_t)0x1FF80078)    /*!< Calibration Data Bytes base address */

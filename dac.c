@@ -2,7 +2,7 @@
 
 //example:
 //dac_init(DAC_Channel_1, DAC_OUT1);
-void dac_init(uint32_t DAC_Channel_X, uint16_t GPIO_Pin){
+void dac_init(uint32_t DAC_Channel_X){
 
   GPIO_InitTypeDef GPIO_InitStructure; 
   DAC_InitTypeDef DAC_InitStructure;
@@ -11,10 +11,18 @@ void dac_init(uint32_t DAC_Channel_X, uint16_t GPIO_Pin){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);	
 
   /* Configure PA.04 (DAC_OUT1), PA.05 (DAC_OUT2) as analog */
-  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(DAC_GPIO, &GPIO_InitStructure);
+	if (DAC_Channel_X == DAC_Channel_1) {
+		GPIO_InitStructure.GPIO_Pin =  DAC_OUT1;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+		GPIO_Init(DAC_GPIO, &GPIO_InitStructure);
+	}
+	else{
+		GPIO_InitStructure.GPIO_Pin =  DAC_OUT2;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+		GPIO_Init(DAC_GPIO, &GPIO_InitStructure);
+	}
 
   /* DAC channel Configuration */
   DAC_InitStructure.DAC_Trigger = DAC_Trigger_None;

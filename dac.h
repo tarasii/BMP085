@@ -18,6 +18,6 @@
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions ------------------------------------------------------- */
-void dac_init(uint32_t DAC_Channel_X, uint16_t GPIO_Pin);
+void dac_init(uint32_t DAC_Channel_X);
 void dac_set(uint32_t DAC_Channel_X, uint16_t value);
 #endif /* __DAC_H */

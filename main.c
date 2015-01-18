@@ -88,8 +88,8 @@ int main(void){
 	
 	BMP085_RawCalibData(bmp085.calib.raw);
 
-	dac_init(DAC_Channel_1, DAC_OUT1);
-	dac_set(DAC_Channel_1, 500);
+	dac_init(DAC_Channel_1);
+	dac_set(DAC_Channel_1, 600);
 	
 	//tim_init_pwmout(8000, 2000); //2KHz
 	//tim_init_pwmout(200, 100); //80KHz
@@ -125,6 +125,7 @@ int main(void){
 			acquireTemperatureData();
 			while (!flag_ADCDMA_TransferComplete);			
 			processTempData(&ADC_RES);
+			//ADC_RES.temperature_C = adc_coretemp_simple();
 
 			DHT11_RawRead(dhtbuf);		
 			humidity = DHT22_Humidity(dhtbuf);

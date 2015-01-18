@@ -78,42 +78,35 @@ void processTempData(ADC_Typedef* ADC_RES)
   uint32_t index, dataSum;
 
   /* sort received data in */
-  insertionSort(ADC_ConvertedValueBuff, MAX_TEMP_CHNL);
+  insertionSort(ADC_ConvertedValueBuff, MAX_ADC_CHNL);
   
 	//One value
-	//ADC_RES->tempAVG = ADC_ConvertedValueBuff[0];
+	//ADC_RES->Chanel13AVG = ADC_ConvertedValueBuff[0];
 
 	//Math avarage
   //dataSum = 0;
-  //for (index=0; index < MAX_TEMP_CHNL; index++){
+  //for (index=0; index < MAX_ADC_CHNL; index++){
   //  dataSum += ADC_ConvertedValueBuff[index];
   //}
-  //tempAVG = dataSum / MAX_TEMP_CHNL ;
+  //ADC_RES->Chanel13AVG = dataSum / MAX_ADC_CHNL ;
  
   /* Calculate the Interquartile mean */
-  ADC_RES->tempAVG = interquartileMean(ADC_ConvertedValueBuff, MAX_TEMP_CHNL);
+  ADC_RES->Chanel13AVG = interquartileMean(ADC_ConvertedValueBuff, MAX_ADC_CHNL);
 	
-//	LM temperature math average
-//  dataSum = 0;
-//  /* Sum up all mesured data for reference temperature average calculation */ 
-//  for (index=MAX_TEMP_CHNL; index < ADC_CONV_BUFF_SIZE-8; index++){
-//    dataSum += ADC_ConvertedValueBuff[index];
-//  }
-//  /* Devide sum up result by 4 for the temperature average calculation*/
-//  altTempAVG = dataSum / 4 ;
 
-	//Preasure math average
+	//Core temperature math average
   dataSum = 0;
   /* Sum up all mesured data for reference temperature average calculation */ 
-  for (index=MAX_TEMP_CHNL+4; index < ADC_CONV_BUFF_SIZE-4; index++){
+  for (index = MAX_ADC_CHNL; index < MAX_ADC_CHNL + MAX_TEMP_CHNL; index++){
     dataSum += ADC_ConvertedValueBuff[index];
   }
   /* Devide sum up result by 4 for the temperature average calculation*/
-  ADC_RES->Chanel13AVG = dataSum / 4 ;
-
+  ADC_RES->tempAVG = dataSum / 4 ;
+  //ADC_RES->tempAVG = ADC_ConvertedValueBuff[16]  ;
+	
   dataSum = 0;
   /* Sum up all mesured data for reference temperature average calculation */ 
-  for (index=MAX_TEMP_CHNL+8; index < ADC_CONV_BUFF_SIZE; index++){
+  for (index = MAX_ADC_CHNL + MAX_TEMP_CHNL; index < ADC_CONV_BUFF_SIZE; index++){
     dataSum += ADC_ConvertedValueBuff[index];
   }
   /* Devide sum up result by 4 for the temperature average calculation*/
@@ -222,10 +215,6 @@ void adc_init(){
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);  
 	
-/* ADC input */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4  ;                               
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-  GPIO_Init( GPIOA, &GPIO_InitStructure);
 	
   /* Test user or factory temperature sensor calibration value */
   if ( testUserCalibData() == ENABLE ) calibdata = *USER_CALIB_DATA;
@@ -236,9 +225,6 @@ void adc_init(){
     writeCalibData(&calibdata);
     calibdata = *USER_CALIB_DATA;
   }
-
-  /* Enable ADC clock & SYSCFG */
-  //RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
   
   /* Enable the internal connection of Temperature sensor and with the ADC channels*/
   ADC_TempSensorVrefintCmd(ENABLE); 
@@ -263,26 +249,25 @@ void adc_init(){
   //ADC_InitStructure.ADC_NbrOfConversion = 1;
   ADC_Init(ADC1, &ADC_InitStructure);
 
-  /* ADC1 regular Temperature sensor channel16 and internal reference channel17 configuration */ 
 
-	for (ch_index = 1; ch_index <= MAX_TEMP_CHNL; ch_index++){
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_16, ch_index, 
+	for (ch_index = 1; ch_index <= MAX_ADC_CHNL; ch_index++){
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_13, ch_index, 
 														 ADC_SampleTime_384Cycles);
 	}
 
-	// lm temperature
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 9, ADC_SampleTime_384Cycles);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 10, ADC_SampleTime_384Cycles);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 11, ADC_SampleTime_384Cycles);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 12, ADC_SampleTime_384Cycles);
+//	for (ch_index = MAX_ADC_CHNL + 1; ch_index <= MAX_TEMP_CHNL + MAX_ADC_CHNL; ch_index++){
+//		ADC_RegularChannelConfig(ADC1, ADC_Channel_16, ch_index, 
+//														 ADC_SampleTime_384Cycles);
+//	}
 
-	// preasure
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 13, ADC_SampleTime_384Cycles);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 14, ADC_SampleTime_384Cycles);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 15, ADC_SampleTime_384Cycles);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 16, ADC_SampleTime_384Cycles);
+  /* ADC1 regular Temperature sensor channel16 and internal reference channel17 configuration */ 
+	// core temperature
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 13, ADC_SampleTime_384Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 14, ADC_SampleTime_384Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 15, ADC_SampleTime_384Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 16, ADC_SampleTime_384Cycles);
 
-	
+	// vref
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 17, ADC_SampleTime_384Cycles);
   ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 18, ADC_SampleTime_384Cycles);
   ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 19, ADC_SampleTime_384Cycles);
