@@ -47,12 +47,5 @@ Temporary Items
 .iex
 .bak
 .dep
-.d
-.o
-.crf
-.plg
-.build_log.htm
-.axf
-.lnp
-.map
-.tra
+/obj/*
+/obj
