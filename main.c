@@ -60,14 +60,22 @@ void DMA1_Channel1_IRQHandler    (void)
 
 int main(void){
 
-	char strDisp[25]; uint8_t dhtbuf[5]; 
+	char strDisp[25]; 
+	
+	uint8_t dhtbuf[5]; 
+	//uint16_t owraw[owdevnum];
+	uint8_t rd;
+	uint8_t cmd_mode;
 	uint8_t i2craw[5];
-	uint16_t owraw;
-	char rd;
 	struct bmp085_type bmp085;
 	ADC_Typedef ADC_RES;
+	
 	RTC_DateTypeDef RTCDateStr;
 	RTC_TimeTypeDef RTCTimeStr;
+	
+	uint8_t  num_ow, i_ow;
+	uint8_t idbuf[owdevnum][8];
+	uint16_t raw_ow[owdevnum];
 	
 	RCC_Configuration();
 	
@@ -96,53 +104,29 @@ int main(void){
 	tim_init_pwmout(800, 200);
 	tim_init_cnt();
 
+	num_ow = OW_Scan((uint8_t *)idbuf, owdevnum);
+  OW_Send(OW_SEND_RESET, "\xcc\x44", 2, NULL, NULL, OW_NO_READ);
+	
+//	sprintf(strDisp, "REDY!\n\r");		
+//	USART_DMA_send(USART1, strDisp, strlen(strDisp));
+	
+	cmd_mode = 1; //first read all
 
-	sprintf(strDisp, "REDY!\n\r");		
-	USART_DMA_send(USART1, strDisp, strlen(strDisp));
-
-	while(1){
+	while(1)
+	{
 	
 		if (flag_UserButton == 1){
 			if (++mode == 3){mode = 0;}
 			flag_UserButton = 0;
 			first_time_in_mode = 1;
 		}
-
-// 		if (uint16_time_diff(systick_ms, toggle_ms) >= 500)
-// 		{
-// 			toggle_ms = systick_ms;
-// 			if (stop==0) {GPIO_TOGGLE(LD_PORT,LD_BLUE);}	
-// 		}		
 									
- 		if (uint16_time_diff(systick_ms, toggle_ms) >= 1000)
+ 		if (uint16_time_diff(systick_ms, toggle_ms) >= 1000) //1 sec delay
  		{
  			toggle_ms = systick_ms;
 
 			GPIO_TOGGLE(LD_PORT,LD_BLUE);
-			
-			//internal ADC with DMA
-			clearADCDMA_TransferComplete();
-			acquireTemperatureData();
-			while (!flag_ADCDMA_TransferComplete);			
-			processTempData(&ADC_RES);
-			//ADC_RES.temperature_C = adc_coretemp_simple();
-
-			DHT11_RawRead(dhtbuf);		
-			humidity = DHT22_Humidity(dhtbuf);
-			temperature = DHT22_Temperature(dhtbuf);
-
-			BMP085_RawTemperarure(i2craw);
-			BMP085_RawPreasure(i2craw);		
-			BMP085_UTUP(i2craw, &bmp085);
-			
-			temperatureP = BMP085_Temperarure(&bmp085);
-			preasure = BMP085_Preasure(&bmp085);
-			
-			owraw = GetSingleTemperature();
-			
-			RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
-			RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
-			
+				
 			//mode selector
 			switch (mode){
 			case 0:				
@@ -160,7 +144,7 @@ int main(void){
 					
 				}
 										
-										
+				if (cmd_mode==0) cmd_mode = 1;						
 				break;
 				
 			case 2:
@@ -170,77 +154,196 @@ int main(void){
 				}
 										
 				GPIO_TOGGLE(LD_PORT,LD_GREEN);
+				if (cmd_mode==0) cmd_mode = 2;						
 										
 				break;
 				
-		}			
-
-	}
+			}			
+		}
 		
-	if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)==SET)
-	{
-		rd = USART_ReceiveData(USART1);
-//			if (rd == 122) 
-//			{				
-//				sprintf(strDisp, "begin;%2.2f;%2d;%2.1f;", voltage_V, temperature_C, temperature);				
-//				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
-//				sprintf(strDisp, "%2.1f;end\n\r", humidity);				
-//				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-//			}
-//			else
-//			{
-//			}				
-		
-		sprintf(strDisp, "UART=%d;\n\r", rd);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "MODE=%d;\n\r", mode);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "CH13_RAW=%d;\n\r", ADC_RES.Chanel13AVG);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "T=%d;\n\r", period);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "t=%d;\n\r", dirty_cycle);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-//		sprintf(strDisp, "intcnt=%d;\n\r", intcnt);		
-//		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "V_ref_RAW=%d;\n\r", ADC_RES.refAVG);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "Vref=%2.2fV;\n\r", ADC_RES.voltage_V);				
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "T_core_RAW=%d;\n\r", ADC_RES.tempAVG);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "Tcore=%2dC;\n\r", ADC_RES.temperature_C);				
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-
-		sprintf(strDisp, "DHT_RAW=%02x%02x%02x%02x%02x;\n\r", dhtbuf[0], dhtbuf[1], dhtbuf[2], dhtbuf[3], dhtbuf[4]);				
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "T_DHT=%2.1fC;\n\r", temperature);				
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));		
-		sprintf(strDisp, "H_DHT=%2.1f%%;\n\r", humidity);				
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-
-		sprintf(strDisp, "BMP085_Calib %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
-			bmp085.calib.raw[0], bmp085.calib.raw[1], bmp085.calib.raw[2], bmp085.calib.raw[3], bmp085.calib.raw[4], bmp085.calib.raw[5],
-			bmp085.calib.raw[6], bmp085.calib.raw[7], bmp085.calib.raw[8], bmp085.calib.raw[9], bmp085.calib.raw[10]);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-		sprintf(strDisp, "BMP085_RAW %02x%02x %02x%02x%02x;\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-
-		sprintf(strDisp, "T_BMP085=%2.1fC;\n\r", temperatureP);		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-		sprintf(strDisp, "P_BMP085=%dPa=%3.1fmmHg;\n\r", preasure, BMP085_Preasure_mm(preasure));		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));
-
-		sprintf(strDisp, "T_DS=%2.1fC;\n\r", CalculateTemperature(owraw));		
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-
-		sprintf(strDisp, "DATE: %02d/%02d/%02d %02d:%02d:%02d.\n\r", RTCDateStr.RTC_Year, RTCDateStr.RTC_Month, RTCDateStr.RTC_Date, RTCTimeStr.RTC_Hours, RTCTimeStr.RTC_Minutes, RTCTimeStr.RTC_Seconds);
-		USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-
+		if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE)==SET)
+		{
+			rd = USART_ReceiveData(USART1);
+			switch (rd){
+				case 117:
+					cmd_mode = 1;
+					break;
+			
+				case 97:
+					cmd_mode = 2;
+					break;
+			
+				case 116:
+					cmd_mode = 4;
+					break;
+			
+				case 112:
+					cmd_mode = 5;
+					break;
+			
+				case 104:
+					cmd_mode = 6;
+					break;
+			
+				case 122:
+					cmd_mode = 7;
+					break;
+			
+				default :
+					cmd_mode = 3;
+				
+			}
 		}
 	
+		switch (cmd_mode){
+			case 1: //read all
+			
+				//internal ADC with DMA
+				clearADCDMA_TransferComplete();
+				acquireTemperatureData();
+				while (!flag_ADCDMA_TransferComplete);			
+				processTempData(&ADC_RES);
+				//ADC_RES.temperature_C = adc_coretemp_simple();
+
+				DHT11_RawRead(dhtbuf);		
+				humidity = DHT22_Humidity(dhtbuf);
+				temperature = DHT22_Temperature(dhtbuf);
+
+				BMP085_RawTemperarure(i2craw);
+				BMP085_RawPreasure(i2craw);		
+				BMP085_UTUP(i2craw, &bmp085);
+				
+				temperatureP = BMP085_Temperarure(&bmp085);
+				preasure = BMP085_Preasure(&bmp085);
+				
+				//owraw = GetSingleTemperature();
+				for (i_ow = 0; i_ow<num_ow; i_ow++){
+					raw_ow[i_ow] = GetTemperature((uint8_t *) idbuf[i_ow]);
+				}
+				
+				RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
+				RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
+
+				sprintf(strDisp, "REDY!\n\r");		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				
+				cmd_mode = 0;
+				break;
+			
+			case 2: //write all
+				sprintf(strDisp, "UART=%d;\n\r", rd);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "MODE=%d;\n\r", mode);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "CH13_RAW=%d;\n\r", ADC_RES.Chanel13AVG);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "T=%d;\n\r", period);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "t=%d;\n\r", dirty_cycle);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+		//		sprintf(strDisp, "intcnt=%d;\n\r", intcnt);		
+		//		USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "V_ref_RAW=%d;\n\r", ADC_RES.refAVG);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "Vref=%2.2fV;\n\r", ADC_RES.voltage_V);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "T_core_RAW=%d;\n\r", ADC_RES.tempAVG);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "Tcore=%2dC;\n\r", ADC_RES.temperature_C);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+				sprintf(strDisp, "DHT_RAW=%02x%02x%02x%02x%02x;\n\r", dhtbuf[0], dhtbuf[1], dhtbuf[2], dhtbuf[3], dhtbuf[4]);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "T_DHT=%2.1fC;\n\r", temperature);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
+				sprintf(strDisp, "H_DHT=%2.1f%%;\n\r", humidity);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+				sprintf(strDisp, "BMP085_Calib %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
+					bmp085.calib.raw[0], bmp085.calib.raw[1], bmp085.calib.raw[2], bmp085.calib.raw[3], bmp085.calib.raw[4], bmp085.calib.raw[5],
+					bmp085.calib.raw[6], bmp085.calib.raw[7], bmp085.calib.raw[8], bmp085.calib.raw[9], bmp085.calib.raw[10]);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "BMP085_RAW %02x%02x %02x%02x%02x;\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+				sprintf(strDisp, "T_BMP085=%2.1fC;\n\r", temperatureP);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
+				sprintf(strDisp, "P_BMP085=%dPa=%3.1fmmHg;\n\r", preasure, BMP085_Preasure_mm(preasure));		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+
+		//		sprintf(strDisp, "T_DS=%2.1fC;\n\r", CalculateTemperature(owraw));		
+		//		USART_DMA_send(USART1, strDisp, strlen(strDisp));				
+				sprintf(strDisp, "OW_DevNum=%d;\n\r", num_ow);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
+				for (i_ow = 0; i_ow<num_ow; i_ow++){
+						sprintf(strDisp, "OW%d_RAW =%04x %02x%02x%02x%02x%02x%02x%02x%02x;\n\r", 
+							i_ow, raw_ow[i_ow], 
+							idbuf[i_ow][0],idbuf[i_ow][1],idbuf[i_ow][2],idbuf[i_ow][3],
+							idbuf[i_ow][4],idbuf[i_ow][5],idbuf[i_ow][6],idbuf[i_ow][7]);		
+						USART_DMA_send(USART1, strDisp, strlen(strDisp));
+						if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
+								sprintf(strDisp, "T_DS%d=%2.1fC;\n\r", i_ow, CalculateTemperature(raw_ow[i_ow]));		
+								USART_DMA_send(USART1, strDisp, strlen(strDisp));
+						}
+				}
+
+				sprintf(strDisp, "DATE: %02d/%02d/%02d %02d:%02d:%02d.\n\r", RTCDateStr.RTC_Year, RTCDateStr.RTC_Month, RTCDateStr.RTC_Date, RTCTimeStr.RTC_Hours, RTCTimeStr.RTC_Minutes, RTCTimeStr.RTC_Seconds);
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
+				cmd_mode = 0;				
+      break;
+				
+			case 3: //write key
+				sprintf(strDisp, "UART=%d;\n\r", rd);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "MODE=%d;\n\r", mode);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				cmd_mode = 0;				
+      break;
+			
+			case 4: //write only ds18b20
+				for (i_ow = 0; i_ow<num_ow; i_ow++){
+						if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
+								sprintf(strDisp, "%2.1f ", CalculateTemperature(raw_ow[i_ow]));		
+								USART_DMA_send(USART1, strDisp, strlen(strDisp));
+						}
+				}
+				for (i_ow = 0; i_ow<num_ow; i_ow++){
+						if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
+						sprintf(strDisp, "%02x%02x%02x%02x%02x%02x%02x%02x ", 
+							idbuf[i_ow][0],idbuf[i_ow][1],idbuf[i_ow][2],idbuf[i_ow][3],
+							idbuf[i_ow][4],idbuf[i_ow][5],idbuf[i_ow][6],idbuf[i_ow][7]);		
+						USART_DMA_send(USART1, strDisp, strlen(strDisp));
+						}
+				}
+						sprintf(strDisp, "\n\r");		
+						USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				cmd_mode = 0;				
+      break;				
+			
+			case 5: //write only bmp035
+				sprintf(strDisp, "%2.1f %3.1f\n\r", temperatureP, BMP085_Preasure_mm(preasure));		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				cmd_mode = 0;				
+      break;
+			
+			case 6: //write only dht22
+				sprintf(strDisp, "%2.1f %2.1f\n\r", temperature, humidity);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				cmd_mode = 0;				
+      break;
+			
+			case 7: //old protocol
+				sprintf(strDisp, "begin;%2.1f;%2.1f;", temperatureP, ADC_RES.voltage_V);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
+				sprintf(strDisp, "%2.1f;%2.1f;", temperature, humidity);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
+				sprintf(strDisp, "%2.1f;%3.1f;end\n\r", humidity, BMP085_Preasure_mm(preasure));				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				cmd_mode = 0;				
+      break;
+			
+		}
 	}
-	
 }
 
 
