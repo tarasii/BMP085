@@ -16,7 +16,11 @@ float temperature, temperatureP;
 
 int32_t preasure;
 
-volatile uint32_t dirty_cycle = 0, period = 0, intcnt = 0;// ;
+uint32_t dht_cycle [43];
+
+volatile uint32_t dirty_cycle = 0, period = 0;
+
+uint32_t intcnt = 0;
 
 volatile uint8_t mode = 0, first_time_in_mode = 1, flag_UserButton = 0;
 
@@ -40,6 +44,13 @@ void TIM2_IRQHandler(void)
 
 		period = TIM_GetCapture1(TIM2);
 		dirty_cycle = TIM_GetCapture2(TIM2);
+		
+		if (intcnt < 43) {
+			dht_cycle[intcnt] = period;
+			intcnt++;
+			//dht_cycle[intcnt] = dirty_cycle;
+			//intcnt++;
+		}
 		
     if (TIM_GetFlagStatus(TIM2, TIM_FLAG_CC1OF) != RESET)
     {
@@ -81,6 +92,15 @@ int main(void){
 	
 	button_init_irq();
 	
+//	pin_mode(DHT11_PORT, DHT11_PIN, GPIO_MODE_OUT2_PP);
+// 	GPIO_HIGH(DHT11_PORT,DHT11_PIN);
+	
+	pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);
+	GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
+
+	pin_mode(GPIOA, GPIO_Pin_9, GPIO_MODE_OUT2_PP);
+	GPIO_HIGH(GPIOA,	GPIO_Pin_9);
+
 	led_init();
 	
 	rtc_init();
@@ -99,16 +119,18 @@ int main(void){
 	dac_init(DAC_Channel_1);
 	dac_set(DAC_Channel_1, 600);
 	
-	//tim_init_pwmout(8000, 2000); //2KHz
-	//tim_init_pwmout(200, 100); //80KHz
-	tim_init_pwmout(800, 200);
-	tim_init_cnt();
-
+	Delay(200);
+	
 	num_ow = OW_Scan((uint8_t *)idbuf, owdevnum);
   OW_Send(OW_SEND_RESET, "\xcc\x44", 2, NULL, NULL, OW_NO_READ);
 	
-//	sprintf(strDisp, "REDY!\n\r");		
-//	USART_DMA_send(USART1, strDisp, strlen(strDisp));
+	//tim_init_pwmout(8000, 2000); //2KHz
+	//tim_init_pwmout(200, 100); //80KHz
+	tim_init_pwmout(800, 200);	
+	tim_init_cnt();
+	//GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
+	
+	Delay(2000); //power up delay 
 	
 	cmd_mode = 1; //first read all
 
@@ -166,27 +188,31 @@ int main(void){
 			rd = USART_ReceiveData(USART1);
 			switch (rd){
 				case 117:
-					cmd_mode = 1;
+					cmd_mode = 1; //u
 					break;
 			
 				case 97:
-					cmd_mode = 2;
+					cmd_mode = 2; //a
 					break;
 			
 				case 116:
-					cmd_mode = 4;
+					cmd_mode = 4; //t
 					break;
 			
 				case 112:
-					cmd_mode = 5;
+					cmd_mode = 5; //p
 					break;
 			
 				case 104:
-					cmd_mode = 6;
+					cmd_mode = 6; //h
 					break;
 			
 				case 122:
-					cmd_mode = 7;
+					cmd_mode = 7; //z
+					break;
+			
+				case 110:
+					cmd_mode = 8; //n
 					break;
 			
 				default :
@@ -205,10 +231,6 @@ int main(void){
 				processTempData(&ADC_RES);
 				//ADC_RES.temperature_C = adc_coretemp_simple();
 
-				DHT11_RawRead(dhtbuf);		
-				humidity = DHT22_Humidity(dhtbuf);
-				temperature = DHT22_Temperature(dhtbuf);
-
 				BMP085_RawTemperarure(i2craw);
 				BMP085_RawPreasure(i2craw);		
 				BMP085_UTUP(i2craw, &bmp085);
@@ -223,6 +245,11 @@ int main(void){
 				
 				RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
 				RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
+
+//				DHT11_RawRead(dhtbuf);		
+				DHT11_FromTimerRead(dhtbuf, dht_cycle, &intcnt);
+				humidity = DHT22_Humidity(dhtbuf);
+				temperature = DHT22_Temperature(dhtbuf);
 
 				sprintf(strDisp, "REDY!\n\r");		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
@@ -259,11 +286,11 @@ int main(void){
 				sprintf(strDisp, "H_DHT=%2.1f%%;\n\r", humidity);				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
-				sprintf(strDisp, "BMP085_Calib %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
+				sprintf(strDisp, "BMP085_CALIB_RAW=%04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
 					bmp085.calib.raw[0], bmp085.calib.raw[1], bmp085.calib.raw[2], bmp085.calib.raw[3], bmp085.calib.raw[4], bmp085.calib.raw[5],
 					bmp085.calib.raw[6], bmp085.calib.raw[7], bmp085.calib.raw[8], bmp085.calib.raw[9], bmp085.calib.raw[10]);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
-				sprintf(strDisp, "BMP085_RAW %02x%02x %02x%02x%02x;\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
+				sprintf(strDisp, "BMP085_RAW=%02x%02x %02x%02x%02x;\n\r",i2craw[0],i2craw[1],i2craw[2],i2craw[3],i2craw[4]);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
 
 				sprintf(strDisp, "T_BMP085=%2.1fC;\n\r", temperatureP);		
@@ -273,10 +300,10 @@ int main(void){
 
 		//		sprintf(strDisp, "T_DS=%2.1fC;\n\r", CalculateTemperature(owraw));		
 		//		USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-				sprintf(strDisp, "OW_DevNum=%d;\n\r", num_ow);		
+				sprintf(strDisp, "OW_DEV=%d;\n\r", num_ow);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
 				for (i_ow = 0; i_ow<num_ow; i_ow++){
-						sprintf(strDisp, "OW%d_RAW =%04x %02x%02x%02x%02x%02x%02x%02x%02x;\n\r", 
+						sprintf(strDisp, "OW%d_RAW=%02x%02x%02x%02x%02x%02x%02x%02x %04x;\n\r", 
 							i_ow, raw_ow[i_ow], 
 							idbuf[i_ow][0],idbuf[i_ow][1],idbuf[i_ow][2],idbuf[i_ow][3],
 							idbuf[i_ow][4],idbuf[i_ow][5],idbuf[i_ow][6],idbuf[i_ow][7]);		
@@ -302,21 +329,15 @@ int main(void){
 			
 			case 4: //write only ds18b20
 				for (i_ow = 0; i_ow<num_ow; i_ow++){
-						if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
-								sprintf(strDisp, "%2.1f ", CalculateTemperature(raw_ow[i_ow]));		
-								USART_DMA_send(USART1, strDisp, strlen(strDisp));
-						}
-				}
-				for (i_ow = 0; i_ow<num_ow; i_ow++){
-						if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
+					if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
 						sprintf(strDisp, "%02x%02x%02x%02x%02x%02x%02x%02x ", 
-							idbuf[i_ow][0],idbuf[i_ow][1],idbuf[i_ow][2],idbuf[i_ow][3],
-							idbuf[i_ow][4],idbuf[i_ow][5],idbuf[i_ow][6],idbuf[i_ow][7]);		
+							idbuf[i_ow][7],idbuf[i_ow][6],idbuf[i_ow][5],idbuf[i_ow][4],
+							idbuf[i_ow][3],idbuf[i_ow][2],idbuf[i_ow][1],idbuf[i_ow][0]);		
 						USART_DMA_send(USART1, strDisp, strlen(strDisp));
-						}
+						sprintf(strDisp, "%2.1f\n\r", CalculateTemperature(raw_ow[i_ow]));		
+						USART_DMA_send(USART1, strDisp, strlen(strDisp));
+					}
 				}
-						sprintf(strDisp, "\n\r");		
-						USART_DMA_send(USART1, strDisp, strlen(strDisp));
 				cmd_mode = 0;				
       break;				
 			
@@ -339,6 +360,24 @@ int main(void){
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
 				sprintf(strDisp, "%2.1f;%3.1f;end\n\r", humidity, BMP085_Preasure_mm(preasure));				
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				cmd_mode = 0;				
+      break;
+			
+			case 8: //dht22 on timer
+				
+				DHT11_FromTimerRead(dhtbuf, dht_cycle, &intcnt);
+				humidity = DHT22_Humidity(dhtbuf);
+				temperature = DHT22_Temperature(dhtbuf);
+
+				sprintf(strDisp, "n=%d \n\r", intcnt);		
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "DHT_RAW=%02x%02x%02x%02x%02x;\n\r", dhtbuf[0], dhtbuf[1], dhtbuf[2], dhtbuf[3], dhtbuf[4]);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				sprintf(strDisp, "T_DHT=%2.1fC;\n\r", temperature);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
+				sprintf(strDisp, "H_DHT=%2.1f%%;\n\r", humidity);				
+				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+			
 				cmd_mode = 0;				
       break;
 			

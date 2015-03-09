@@ -27,7 +27,8 @@ void tim_init_cnt(void){
   TIM_ICStructInit(&TIM_ICInitStruct);
   TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
   //TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
-  //TIM_ICInit(TIM2, &TIM_ICInitStruct);
+ 	TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_Falling,
+	//TIM_ICInit(TIM2, &TIM_ICInitStruct);
 	TIM_PWMIConfig(TIM2, &TIM_ICInitStruct); 
 
 	//TIM_SelectInputTrigger(TIM2, TIM_TS_TI2FP2);

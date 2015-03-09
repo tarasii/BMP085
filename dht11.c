@@ -56,7 +56,9 @@ uint8_t DHT11_RawRead(uint8_t *buf){
 	}
 	
  	//release line
-	GPIO_HIGH(GPIOA,GPIO_Pin_2);
+	GPIO_HIGH(DHT11_PORT, DHT11_PIN);
+
+	for (i = 0; i<5; i++) buf[i]=0;
 	
 	if (cnt>=MAX_TICS) return DHT11_NO_CONN;
 	
@@ -84,6 +86,53 @@ uint8_t DHT11_RawRead(uint8_t *buf){
 	return DHT11_OK;	
 	//return check_sum;
 }
+
+uint8_t DHT11_FromTimerRead(uint8_t *buf, uint32_t *dt, uint32_t *cnt){
+	uint8_t i, check_sum; 
+	
+	*cnt = 0;
+	for (i = 0; i<43; i++) dt[i]=0;
+
+	pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);
+
+	GPIO_LOW(TIM2_GPIO,	TIM2_CH1);
+	Delay(20);
+	GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
+	tim_init_cnt();
+	Delay(20);
+
+	//pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);
+	//GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
+
+	for (i = 0; i<5; i++) buf[i]=0;
+		
+	if (*cnt==0) return DHT11_NO_CONN;
+	
+	//convert data
+ 	for(i=3;i<42;i++){
+		(*buf) <<= 1;
+  	if (dt[i]>2000) {
+			(*buf)++;
+ 		}
+		if (!((i-2)%8) && (i>3)) {
+			buf++;
+		}
+ 	}
+	
+	//calculate checksum
+	buf -= 5;
+	check_sum = 0;
+ 	for(i=0;i<4;i++){
+		check_sum += *buf;
+		buf++;
+	}
+	
+	if (*buf != check_sum) return DHT11_CS_ERROR;
+				
+	return DHT11_OK;	
+	//return check_sum;
+}
+
 
 float DHT22_Humidity(uint8_t *buf){
 	float res;
