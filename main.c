@@ -130,7 +130,7 @@ int main(void){
 	tim_init_cnt();
 	//GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
 	
-	Delay(2000); //power up delay 
+	Delay(1000); //power up delay 
 	
 	cmd_mode = 1; //first read all
 
