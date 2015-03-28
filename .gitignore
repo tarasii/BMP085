@@ -47,5 +47,6 @@ Temporary Items
 .iex
 .bak
 .dep
+.bak
 /obj/*
 /obj
