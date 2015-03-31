@@ -3,7 +3,6 @@
 // Буфер для приема/передачи по 1-wire
 uint8_t ow_buf[8];
 
-
 #define OW_0	0x00
 #define OW_1	0xff
 #define OW_R_1	0xff

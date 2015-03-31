@@ -451,6 +451,11 @@
               <FilePath>.\18b20.c</FilePath>
             </File>
             <File>
+              <FileName>leds.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\leds.c</FilePath>
+            </File>
+            <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\adc.c</FilePath>
@@ -464,6 +469,11 @@
               <FileName>pin.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\pin.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\button.c</FilePath>
             </File>
             <File>
               <FileName>dac.c</FileName>

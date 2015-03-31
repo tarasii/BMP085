@@ -4,12 +4,12 @@ uint16_t read_cycle(uint16_t cur_tics, uint8_t neg_tic){
 	uint16_t cnt_tics;
  	if (cur_tics < MAX_TICS) cnt_tics = 0;
 	if (neg_tic){
-		while (!GPIO_ReadInputDataBit(DHT11_PORT,DHT11_PIN)&&(cnt_tics<MAX_TICS)){
+		while (!GPIO_ReadInputDataBit(DHT11_PORT, DHT11_PIN)&&(cnt_tics<MAX_TICS)){
 			cnt_tics++;
 		}
 	}
 	else {
-		while (GPIO_ReadInputDataBit(DHT11_PORT,DHT11_PIN)&&(cnt_tics<MAX_TICS)){
+		while (GPIO_ReadInputDataBit(DHT11_PORT, DHT11_PIN)&&(cnt_tics<MAX_TICS)){
 			cnt_tics++;
 		}
 	}
@@ -87,18 +87,18 @@ uint8_t DHT11_RawRead(uint8_t *buf){
 	//return check_sum;
 }
 
-uint8_t DHT11_FromTimerRead(uint8_t *buf, uint32_t *dt, uint32_t *cnt){
+uint8_t DHT11_pwm_Read(uint8_t *buf, uint32_t *dt, uint32_t *cnt){
 	uint8_t i, check_sum; 
 	
 	*cnt = 0;
 	for (i = 0; i<43; i++) dt[i]=0;
 
-	pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);
+	pin_mode(DHT11_PORT, DHT11_PIN, GPIO_MODE_OUT2_PP);
 
-	GPIO_LOW(TIM2_GPIO,	TIM2_CH1);
+	GPIO_LOW(DHT11_PORT,	DHT11_PIN);
 	Delay(20);
-	GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
-	tim_init_cnt();
+	GPIO_HIGH(DHT11_PORT,	DHT11_PIN);
+	tim_init_pwm_cnt(DHT11_PORT,	DHT11_PIN);
 	Delay(20);
 
 	//pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);

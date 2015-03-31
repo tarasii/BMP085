@@ -92,11 +92,11 @@ int main(void){
 	
 	button_init_irq();
 	
-//	pin_mode(DHT11_PORT, DHT11_PIN, GPIO_MODE_OUT2_PP);
-// 	GPIO_HIGH(DHT11_PORT,DHT11_PIN);
+	pin_mode(DHT11_PORT, DHT11_PIN, GPIO_MODE_OUT2_PP);
+ 	GPIO_HIGH(DHT11_PORT,DHT11_PIN);
 	
-	pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);
-	GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
+//	pin_mode(TIM2_GPIO, TIM2_CH1, GPIO_MODE_OUT2_PP);
+//	GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
 
 	pin_mode(GPIOA, GPIO_Pin_9, GPIO_MODE_OUT2_PP);
 	GPIO_HIGH(GPIOA,	GPIO_Pin_9);
@@ -126,8 +126,8 @@ int main(void){
 	
 	//tim_init_pwmout(8000, 2000); //2KHz
 	//tim_init_pwmout(200, 100); //80KHz
-	tim_init_pwmout(800, 200);	
-	tim_init_cnt();
+	tim_init_pwm_out(GPIOB, GPIO_Pin_8, 800, 200);	
+	tim_init_pwm_cnt(GPIOA, GPIO_Pin_5);
 	//GPIO_HIGH(TIM2_GPIO,	TIM2_CH1);
 	
 	Delay(1000); //power up delay 
@@ -247,7 +247,7 @@ int main(void){
 				RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
 
 //				DHT11_RawRead(dhtbuf);		
-				DHT11_FromTimerRead(dhtbuf, dht_cycle, &intcnt);
+				DHT11_pwm_Read(dhtbuf, dht_cycle, &intcnt);
 				humidity = DHT22_Humidity(dhtbuf);
 				temperature = DHT22_Temperature(dhtbuf);
 
@@ -365,7 +365,7 @@ int main(void){
 			
 			case 8: //dht22 on timer
 				
-				DHT11_FromTimerRead(dhtbuf, dht_cycle, &intcnt);
+				DHT11_pwm_Read(dhtbuf, dht_cycle, &intcnt);
 				humidity = DHT22_Humidity(dhtbuf);
 				temperature = DHT22_Temperature(dhtbuf);
 

@@ -1,6 +1,6 @@
 #include "uart.h"
 
-void USART_open (USART_TypeDef* USARTx, uint32_t baud)
+void USART_open(USART_TypeDef* USARTx, uint32_t baud)
 {
 	USART_InitTypeDef USART_InitStructure; 
   GPIO_InitTypeDef GPIO_InitStructure; 
@@ -86,7 +86,7 @@ void USART_close(USART_TypeDef* USARTx)
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, DISABLE);
 	}
   if (USARTx == USART2) {
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, DISABLE);
 	}
   USART_Cmd(USARTx, DISABLE);
 	

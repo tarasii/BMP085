@@ -4,6 +4,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "utils.h"
+#include "pin.h"
 
 /* Exported constants --------------------------------------------------------*/
 //+------+------+------+------+
@@ -25,17 +26,24 @@
 //+------+------+------+------+
 //| PB6  | PB7  | PB8  | PB9  |
 //+------+------+------+------+
-//#define TIM2_CH1 		GPIO_Pin_0
-#define TIM2_CH1 		GPIO_Pin_5
-#define TIM2_GPIO 	GPIOA
-#define TIM4_CH3 		GPIO_Pin_8
-#define TIM4_GPIO 	GPIOB
 
+
+typedef struct
+{
+	TIM_TypeDef* 	TIMx;
+	uint16_t 			TIM_Channel_x;
+	uint16_t 			GPIO_PinSource_x;
+	uint32_t 			RCC_APB1Periph;
+	uint8_t 			GPIO_AF_TIMx;
+	uint16_t 			TIM_InputTriggerSource;
+	IRQn_Type 		IRQn;
+} TIM_Init_TypeDef;
 
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions ------------------------------------------------------- */
-void tim_init_cnt(void);
-void tim_init_pwmout(uint32_t period, uint32_t dirty_cucle);
+void tim_init_cnt(GPIO_TypeDef* GPIOx, uint32_t GPIO_Pin_x);
+void tim_init_pwm_cnt(GPIO_TypeDef* GPIOx, uint32_t GPIO_Pin_x);
+void tim_init_pwm_out(GPIO_TypeDef* GPIOx, uint32_t GPIO_Pin_x, uint32_t period, uint32_t dirty_cucle);
 
 #endif /* __TIM_H */
