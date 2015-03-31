@@ -1,12 +1,4 @@
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TIM_H
-#define __TIM_H
-
-/* Includes ------------------------------------------------------------------*/
-#include "utils.h"
-#include "pin.h"
-
-/* Exported constants --------------------------------------------------------*/
+//Timer GPIO Chanel map
 //+------+------+------+------+
 //| TIM2                      |
 //+------+------+------+------+
@@ -27,7 +19,15 @@
 //| PB6  | PB7  | PB8  | PB9  |
 //+------+------+------+------+
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __TIM_H
+#define __TIM_H
 
+/* Includes ------------------------------------------------------------------*/
+#include "utils.h"
+#include "pin.h"
+
+/* Exported types ------------------------------------------------------------*/
 typedef struct
 {
 	TIM_TypeDef* 	TIMx;
@@ -38,6 +38,8 @@ typedef struct
 	uint16_t 			TIM_InputTriggerSource;
 	IRQn_Type 		IRQn;
 } TIM_Init_TypeDef;
+
+/* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
 
