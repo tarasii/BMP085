@@ -1,14 +1,6 @@
 #include "main.h"
 
-static volatile uint32_t TimingDelay;
-RCC_ClocksTypeDef RCC_Clocks;
 
-volatile bool flag_ADCDMA_TransferComplete;
-
-//uint32_t preasureAVG, altTempAVG;
-//float preasure_V, altTemp_V; 
-
-volatile uint16_t systick_ms = 0, toggle_ms = 0;
 
 float humidity;
 
@@ -74,21 +66,13 @@ int main(void){
 	char strDisp[25]; 
 	
 	uint8_t dhtbuf[5]; 
-	//uint16_t owraw[owdevnum];
 	uint8_t rd;
 	uint8_t cmd_mode;
 	uint8_t i2craw[5];
 	struct bmp085_type bmp085;
-	ADC_Typedef ADC_RES;
 	
-	RTC_DateTypeDef RTCDateStr;
-	RTC_TimeTypeDef RTCTimeStr;
-	
-	uint8_t  num_ow, i_ow;
-	uint8_t idbuf[owdevnum][8];
-	uint16_t raw_ow[owdevnum];
-	
-	RCC_Configuration();
+		
+	SysTick_conf();
 	
 	button_init_irq();
 	
@@ -108,9 +92,8 @@ int main(void){
   USART_open(USART1, 9600);   //for RS232
   USART_open(USART2, 115200); //for DS18B20
 	
-	configureDMA();
 	
-	adc_init();	
+	ADC_init();	
 	
 	I2C_LowLevel_Init (I2C2, 1000, 0xA0);
 	
@@ -121,7 +104,7 @@ int main(void){
 	
 	Delay(200);
 	
-	num_ow = OW_Scan((uint8_t *)idbuf, owdevnum);
+	ow_num = OW_Scan((uint8_t *)ow_idbuf, owdevnum);
   OW_Send(OW_SEND_RESET, "\xcc\x44", 2, NULL, NULL, OW_NO_READ);
 	
 	//tim_init_pwmout(8000, 2000); //2KHz
@@ -226,9 +209,9 @@ int main(void){
 			
 				//internal ADC with DMA
 				clearADCDMA_TransferComplete();
-				acquireTemperatureData();
+				ADC_AcquireData();
 				while (!flag_ADCDMA_TransferComplete);			
-				processTempData(&ADC_RES);
+				ADC_ProcessData();
 				//ADC_RES.temperature_C = adc_coretemp_simple();
 
 				BMP085_RawTemperarure(i2craw);
@@ -239,8 +222,8 @@ int main(void){
 				preasure = BMP085_Preasure(&bmp085);
 				
 				//owraw = GetSingleTemperature();
-				for (i_ow = 0; i_ow<num_ow; i_ow++){
-					raw_ow[i_ow] = GetTemperature((uint8_t *) idbuf[i_ow]);
+				for (ow_i = 0; ow_i<ow_num; ow_i++){
+					ow_raw[ow_i] = GetTemperature((uint8_t *) ow_idbuf[ow_i]);
 				}
 				
 				RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
@@ -300,16 +283,16 @@ int main(void){
 
 		//		sprintf(strDisp, "T_DS=%2.1fC;\n\r", CalculateTemperature(owraw));		
 		//		USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-				sprintf(strDisp, "OW_DEV=%d;\n\r", num_ow);		
+				sprintf(strDisp, "OW_DEV=%d;\n\r", ow_num);		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));				
-				for (i_ow = 0; i_ow<num_ow; i_ow++){
+				for (ow_i = 0; ow_i<ow_num; ow_i++){
 						sprintf(strDisp, "OW%d_RAW=%02x%02x%02x%02x%02x%02x%02x%02x %04x;\n\r", 
-							i_ow, raw_ow[i_ow], 
-							idbuf[i_ow][0],idbuf[i_ow][1],idbuf[i_ow][2],idbuf[i_ow][3],
-							idbuf[i_ow][4],idbuf[i_ow][5],idbuf[i_ow][6],idbuf[i_ow][7]);		
+							ow_i, ow_raw[ow_i], 
+							ow_idbuf[ow_i][0],ow_idbuf[ow_i][1],ow_idbuf[ow_i][2],ow_idbuf[ow_i][3],
+							ow_idbuf[ow_i][4],ow_idbuf[ow_i][5],ow_idbuf[ow_i][6],ow_idbuf[ow_i][7]);		
 						USART_DMA_send(USART1, strDisp, strlen(strDisp));
-						if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
-								sprintf(strDisp, "T_DS%d=%2.1fC;\n\r", i_ow, CalculateTemperature(raw_ow[i_ow]));		
+						if (ow_idbuf[ow_i][0] == 0x28){ //temperature sensor id
+								sprintf(strDisp, "T_DS%d=%2.1fC;\n\r", ow_i, CalculateTemperature(ow_raw[ow_i]));		
 								USART_DMA_send(USART1, strDisp, strlen(strDisp));
 						}
 				}
@@ -328,13 +311,13 @@ int main(void){
       break;
 			
 			case 4: //write only ds18b20
-				for (i_ow = 0; i_ow<num_ow; i_ow++){
-					if (idbuf[i_ow][0] == 0x28){ //temperature sensor id
+				for (ow_i = 0; ow_i<ow_num; ow_i++){
+					if (ow_idbuf[ow_i][0] == 0x28){ //temperature sensor id
 						sprintf(strDisp, "%02x%02x%02x%02x%02x%02x%02x%02x ", 
-							idbuf[i_ow][7],idbuf[i_ow][6],idbuf[i_ow][5],idbuf[i_ow][4],
-							idbuf[i_ow][3],idbuf[i_ow][2],idbuf[i_ow][1],idbuf[i_ow][0]);		
+							ow_idbuf[ow_i][7],ow_idbuf[ow_i][6],ow_idbuf[ow_i][5],ow_idbuf[ow_i][4],
+							ow_idbuf[ow_i][3],ow_idbuf[ow_i][2],ow_idbuf[ow_i][1],ow_idbuf[ow_i][0]);		
 						USART_DMA_send(USART1, strDisp, strlen(strDisp));
-						sprintf(strDisp, "%2.1f\n\r", CalculateTemperature(raw_ow[i_ow]));		
+						sprintf(strDisp, "%2.1f\n\r", CalculateTemperature(ow_raw[ow_i]));		
 						USART_DMA_send(USART1, strDisp, strlen(strDisp));
 					}
 				}
@@ -385,54 +368,5 @@ int main(void){
 	}
 }
 
-
-
-
-void RCC_Configuration(void){
-
-  //SysTick_Config(SystemCoreClock / 4000);
-  RCC_GetClocksFreq(&RCC_Clocks);
-  SysTick_Config(RCC_Clocks.HCLK_Frequency / 2000);
-
-  /* Enable the GPIOs Clock */
-  //RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOC| RCC_AHBPeriph_GPIOD| RCC_AHBPeriph_GPIOE| RCC_AHBPeriph_GPIOH, ENABLE);     
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-		
-}  
-
-
-
-
-uint16_t uint16_time_diff(uint16_t now, uint16_t before)
-{
-  return (now >= before) ? (now - before) : (UINT16_MAX - before + now);
-}
-
-void Delay(uint32_t nTime){
-  TimingDelay = nTime;
-
-  while(TimingDelay != 0);
-  
-}
-
-void TimingDelay_Decrement(void){
-
-  if (TimingDelay != 0x00)
-  { 
-    TimingDelay--;
-  }
-	
-	++systick_ms;
-}
-
-void setADCDMA_TransferComplete(void)
-{
-  flag_ADCDMA_TransferComplete = TRUE;
-}
-
-void clearADCDMA_TransferComplete(void)
-{
-  flag_ADCDMA_TransferComplete = FALSE;
-}
 
 

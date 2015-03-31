@@ -6,6 +6,7 @@
 #include "stm32l1xx.h"
 #include <stdio.h>
 #include <string.h>
+#include "delay.h"
 //#include <misc.h>
 
 /* Exported types ------------------------------------------------------------*/
@@ -15,9 +16,7 @@
 #define TRUE !FALSE
 
 /* Exported macro ------------------------------------------------------------*/
-/* MACROs for SET, RESET or TOGGLE Output port */
 
 /* Exported functions ------------------------------------------------------- */
-void Delay(uint32_t nTime);
 
 #endif /* __UTILS_H */

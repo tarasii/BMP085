@@ -16,6 +16,7 @@
 #include "tim.h"
 #include "rtc.h"
 #include "dac.h"
+#include "delay.h"
 
 
 /* Exported types ------------------------------------------------------------*/
