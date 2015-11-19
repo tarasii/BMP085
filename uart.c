@@ -1,6 +1,6 @@
 #include "uart.h"
 
-void USART_open (USART_TypeDef* USARTx, uint32_t baud)
+void USART_open(USART_TypeDef* USARTx, uint32_t baud, uint16_t WordLength, uint16_t Parity, uint16_t StopBits)
 {
 	USART_InitTypeDef USART_InitStructure; 
   GPIO_InitTypeDef GPIO_InitStructure; 
@@ -65,9 +65,12 @@ void USART_open (USART_TypeDef* USARTx, uint32_t baud)
   }
 	
 	USART_InitStructure.USART_BaudRate = baud;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-	USART_InitStructure.USART_Parity = USART_Parity_No;
+	//USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_WordLength = WordLength;
+	//USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_StopBits = StopBits;
+	//USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_Parity = Parity;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 	USART_Init(USARTx, &USART_InitStructure);
@@ -86,7 +89,7 @@ void USART_close(USART_TypeDef* USARTx)
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, DISABLE);
 	}
   if (USARTx == USART2) {
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, DISABLE);
 	}
   USART_Cmd(USARTx, DISABLE);
 	

@@ -77,8 +77,8 @@ int main(void){
 	
 	rtc_init();
 	
-  USART_open(USART1, 9600);   //for RS232
-  USART_open(USART2, 115200); //for DS18B20
+  USART_open(USART1, 9600, USART_WordLength_8b, USART_Parity_No, USART_StopBits_1);   //for RS232
+  USART_open(USART2, 115200, USART_WordLength_8b, USART_Parity_No, USART_StopBits_1); //for DS18B20
 	
 	configureDMA();
 	

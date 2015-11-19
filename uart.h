@@ -23,7 +23,7 @@
 //|      |      | PC10 | PC11 | PC12 |
 //+------+------+------+------+------+
 
-void USART_open(USART_TypeDef* USARTx, uint32_t baud);
+void USART_open(USART_TypeDef* USARTx, uint32_t baud, uint16_t WordLength, uint16_t Parity, uint16_t StopBits);
 void USART_DMA_send(USART_TypeDef* USARTx, char *buf, uint8_t len);
 void USART_close(USART_TypeDef* USARTx);
 void USART_print(USART_TypeDef* USARTx, char *buf, uint8_t len);
