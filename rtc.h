@@ -10,6 +10,9 @@
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions ------------------------------------------------------- */
+extern RTC_DateTypeDef RTCDateStr;
+extern RTC_TimeTypeDef RTCTimeStr;
+
 void rtc_init(void);
 
 #endif /* __LEDS_H */

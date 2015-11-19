@@ -54,12 +54,22 @@
 
 #define GPIO_MODE_IN_AN                       0x03		//0000 0011
 
+#define LD_PORT 		GPIOB
+#define LD_GREEN 		GPIO_Pin_7
+#define LD_BLUE     GPIO_Pin_6
+
+#define BUTTON_GPIO_PORT	GPIOA
+#define USER_GPIO_PIN		GPIO_Pin_0
+
 /* Exported macro ------------------------------------------------------------*/
 #define GPIO_HIGH(a,b) 		a->BSRRL = b
 #define GPIO_LOW(a,b)			a->BSRRH = b
-#define GPIO_TOGGLE(a,b) 	a->ODR ^= b 
+#define GPIO_TOGGLE(a,b) 	a->ODR ^= b
 
 /* Exported functions ------------------------------------------------------- */
 void pin_mode(GPIO_TypeDef* GPIOx, uint32_t GPIO_Pin, uint8_t Pin_Mode);
-
+void init_RCC_for_all_GPIO(void);
+void led_init(void);
+void button_init_irq (void);
+void button_init (void);
 #endif /* __PIN_H */

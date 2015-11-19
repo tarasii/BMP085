@@ -1,6 +1,7 @@
 #include "rtc.h"
 
-
+RTC_DateTypeDef RTCDateStr;
+RTC_TimeTypeDef RTCTimeStr;
 
 void rtc_init(void){
 

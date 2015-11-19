@@ -17,9 +17,13 @@ void pin_mode(GPIO_TypeDef* GPIOx, uint32_t GPIO_Pin_x, uint8_t GPIO_Pin_Mode){
   /* Check the parameters */
   assert_param(IS_GPIO_ALL_PERIPH(GPIOx));
 
-	if (GPIOx == GPIOA) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);     
-	if (GPIOx == GPIOB) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);     
-	if (GPIOx == GPIOC) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+	if (GPIOx == GPIOA) {
+		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+	}else if (GPIOx == GPIOB) {
+		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+	}else	if (GPIOx == GPIOC) {
+		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+	}
 	
   /* -------------------------Configure the port pins---------------- */
   /*-- GPIO Mode Configuration --*/
@@ -53,4 +57,49 @@ void pin_mode(GPIO_TypeDef* GPIOx, uint32_t GPIO_Pin_x, uint8_t GPIO_Pin_Mode){
   }
 
 }
+
+void init_RCC_for_all_GPIO(void)
+{
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOC| RCC_AHBPeriph_GPIOD| RCC_AHBPeriph_GPIOE| RCC_AHBPeriph_GPIOH, ENABLE);     
+}
+
+void led_init(void){
+
+	pin_mode(LD_PORT, LD_GREEN|LD_BLUE, GPIO_MODE_OUT2_PP);
+  GPIO_LOW(LD_PORT, LD_GREEN);	
+  GPIO_LOW(LD_PORT, LD_BLUE);
+	
+}
+
+void button_init (void){
+	pin_mode(BUTTON_GPIO_PORT, USER_GPIO_PIN, GPIO_MODE_IN);
+}
+
+void button_init_irq (void){
+   /* USER button and WakeUP button init: GPIO set in input interrupt active mode */
+	
+  EXTI_InitTypeDef EXTI_InitStructure;
+  NVIC_InitTypeDef NVIC_InitStructure;
+
+	button_init();
+	
+  /* Connect Button EXTI Line to Button GPIO Pin */
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA,EXTI_PinSource0);
+
+  /* Configure User Button and IDD_WakeUP EXTI line */
+  EXTI_InitStructure.EXTI_Line = EXTI_Line0 ;  // PA0 for User button AND IDD_WakeUP
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;  
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  /* Enable and set User Button and IDD_WakeUP EXTI Interrupt to the lowest priority */
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn ;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+
+  NVIC_Init(&NVIC_InitStructure); 
+
+} 
 

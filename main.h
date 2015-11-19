@@ -12,12 +12,11 @@
 #include "uart.h"
 #include "bmp085.h"
 #include "18b20.h"
-#include "leds.h"
 #include "adc.h"
 #include "tim.h"
 #include "rtc.h"
-#include "button.h"
 #include "dac.h"
+#include "delay.h"
 
 
 /* Exported types ------------------------------------------------------------*/
