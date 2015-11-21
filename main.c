@@ -229,10 +229,12 @@ int main(void){
 				RTC_GetTime(RTC_Format_BIN, &RTCTimeStr);
 				RTC_GetDate(RTC_Format_BIN, &RTCDateStr);
 
-//				DHT11_RawRead(dhtbuf);		
-				DHT11_pwm_Read(dhtbuf, dht_cycle, &intcnt);
-				humidity = DHT22_Humidity(dhtbuf);
-				temperature = DHT22_Temperature(dhtbuf);
+				DHT11_RawRead(dhtbuf);		
+				//DHT11_pwm_Read(dhtbuf, dht_cycle, &intcnt);
+//				humidity = DHT22_Humidity(dhtbuf);
+//				temperature = DHT22_Temperature(dhtbuf);
+				humidity = DHT11_Humidity(dhtbuf);
+				temperature = DHT11_Temperature(dhtbuf);
 
 				sprintf(strDisp, "REDY!\n\r");		
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));
@@ -299,6 +301,17 @@ int main(void){
 
 				sprintf(strDisp, "DATE: %02d/%02d/%02d %02d:%02d:%02d.\n\r", RTCDateStr.RTC_Year, RTCDateStr.RTC_Month, RTCDateStr.RTC_Date, RTCTimeStr.RTC_Hours, RTCTimeStr.RTC_Minutes, RTCTimeStr.RTC_Seconds);
 				USART_DMA_send(USART1, strDisp, strlen(strDisp));		
+
+//				sprintf(strDisp, "fuck=%04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
+//					dht_cycle[0], dht_cycle[1], dht_cycle[2], dht_cycle[3], dht_cycle[4], dht_cycle[5], dht_cycle[6], dht_cycle[7],
+//					dht_cycle[8], dht_cycle[9], dht_cycle[10], dht_cycle[11], dht_cycle[12], dht_cycle[13], dht_cycle[14], dht_cycle[15]);		
+//				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+//				
+//				sprintf(strDisp, "fuck=%04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x %04x;\n\r",
+//					dht_cycle[16], dht_cycle[17], dht_cycle[18], dht_cycle[19], dht_cycle[20], dht_cycle[21], dht_cycle[22], dht_cycle[23],
+//					dht_cycle[24], dht_cycle[25], dht_cycle[26], dht_cycle[27], dht_cycle[28], dht_cycle[29], dht_cycle[30], dht_cycle[31]);		
+//				USART_DMA_send(USART1, strDisp, strlen(strDisp));
+				
 				cmd_mode = 0;				
       break;
 				
