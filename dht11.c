@@ -63,7 +63,7 @@ uint8_t DHT11_RawRead(uint8_t *buf){
 	if (cnt>=MAX_TICS) return DHT11_NO_CONN;
 	
 	//convert data
- 	for(i=2;i<42;i++){
+ 	for(i=3;i<42;i++){
 		(*buf) <<= 1;
   	if (dt[i]>20) {
 			(*buf)++;
@@ -109,9 +109,10 @@ uint8_t DHT11_pwm_Read(uint8_t *buf, uint32_t *dt, uint32_t *cnt){
 	if (*cnt==0) return DHT11_NO_CONN;
 	
 	//convert data
- 	for(i=3;i<42;i++){
+ 	//for(i=3;i<42;i++){
+ 	for(i= 5;i<42;i++){
 		(*buf) <<= 1;
-  	if (dt[i]>2000) {
+  	if (dt[i]>1800) {
 			(*buf)++;
  		}
 		if (!((i-2)%8) && (i>3)) {
