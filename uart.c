@@ -1,10 +1,6 @@
 #include "uart.h"
 
-<<<<<<< HEAD
 void USART_open(USART_TypeDef* USARTx, uint32_t baud, uint16_t WordLength, uint16_t Parity, uint16_t StopBits)
-=======
-void USART_open(USART_TypeDef* USARTx, uint32_t baud)
->>>>>>> origin/master
 {
 	USART_InitTypeDef USART_InitStructure; 
   GPIO_InitTypeDef GPIO_InitStructure; 
